@@ -1,0 +1,23 @@
+* assets object
+  in the assets file
+  define source files in code, assets are loaded into the file on game startup before the "Start game" button appears
+  once a path is defined in e.g. "soundSources.win = blah", you can access the sound in-game with "assets.sounds.win"
+  "imageSources" are converted into both "images" and "textures" to be used with webgl
+
+* game.s
+  game.js updates at exactly 60hz
+  game.js draws as much as it can, but no more than 60fps (as that would be unnecessary)
+  game.js exports ctx, the 2d canvas context used for drawing
+
+* scene
+  given a scene .ldtk file in constructor
+  represents current game scene, containing level data and currently alive things
+
+* things
+  everything in the game extends from the Thing class
+  everything in a scene is a Thing with "update" and "draw" functions
+
+  a Thing has a position and speed vector, and integrates its speed into its position every frame
+  Things can collide with other Things that have "isSolid" enabled
+  Things can collide with tiles in the scene's map that are listed in the tiles property of the Thing's "collisionSettings" object
+  Things can animate based on animations

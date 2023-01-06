@@ -1,0 +1,9 @@
+{
+  "name": "Game",
+  "main": "index.html",
+  "window": {
+    "position": "center",
+    "width": 1280,
+    "height": 768
+  }
+}

@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+  <style>
+   body {
+     background-color: black;
+     background-image: url("grid-background.png");
+     margin: 0;
+   }
+
+   canvas {
+     image-rendering: pixelated;
+     position: absolute;
+     object-fit: contain;
+     width: 100vw;
+     height: 100vh;
+   }
+
+   .startButton {
+     position: absolute;
+     left: 50%;
+     top: 50%;
+     transform: translateX(-50%) translateY(-50%);
+     z-index: 100;
+     padding: 2rem;
+     font-size: 2rem;
+     background-color: cornflowerBlue;
+     color: white;
+     border: none;
+     border-radius: 1rem;
+     transition: 0.1s;
+     transition-timing-function: ease-out;
+   }
+
+   .startButton:hover {
+     background-color: white;
+     color: black;
+     transform: translateX(-50%) translateY(-50%) scale(110%);
+   }
+  </style>
+  <style id="cursorStyle"></style>
+
+  <title>Starshot</title>
+  <link rel="shortcut icon" href="favicon.png">
+  <body />
+  <script src="src/core/bootup.js" type="module"></script>
+</html>
