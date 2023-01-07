@@ -13,6 +13,7 @@ import * as u from './core/utils.js'
 import assets from './assets.js'
 import * as vec3 from './core/vector3.js'
 import * as vec2 from './core/vector2.js'
+import * as game from './core/game.js'
 import InputHandler from './core/inputs.js'
 import Bullet from './bullet.js'
 import Pointer from './pointer.js'
@@ -512,7 +513,10 @@ export default class Player extends Thing {
     const scene = getScene()
 
     // mouse look
-    mouse.click && mouse.lock()
+    if (mouse.click && !this.inMenu) {
+      mouse.lock()
+    }
+    
     if (mouse.isLocked()) {
       scene.camera3D.yaw += mouse.delta[0] / 500
       scene.camera3D.pitch += mouse.delta[1] / 500
@@ -612,6 +616,9 @@ export default class Player extends Thing {
 
   openMenu(person) {
     this.inMenu = true
+    let menu = document.getElementById("guiContainer")
+    menu.removeAttribute("hidden")
 
+    game.mouse.unlock();
   }
 }
