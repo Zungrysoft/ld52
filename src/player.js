@@ -15,11 +15,12 @@ import * as vec3 from './core/vector3.js'
 import * as vec2 from './core/vector2.js'
 import InputHandler from './core/inputs.js'
 import Bullet from './bullet.js'
+import Pointer from './pointer.js'
 import DeathAnim from './deathanim.js'
 import LevelStart from './levelstart.js'
 
 export default class Player extends Thing {
-  height = 56
+  height = 90
   onGround = false
   wasOnGround = false
   aabb = [-16, -16, 16, 16]
@@ -39,7 +40,7 @@ export default class Player extends Thing {
   staircaseOffset = 0
   inputs = null
   lastFallSpeed = 0
-  time = 600
+  time = 60 * 60 * 3
   showGui = true // cutscenes set this to false
   deliveredCount = 0
   sprite = null
@@ -50,6 +51,7 @@ export default class Player extends Thing {
   walkFrames = 0
   walkFrameAccel = 0
   slowTime = 0
+  inMenu = false
 
   constructor (position, angle = 0) {
     super()
@@ -59,10 +61,10 @@ export default class Player extends Thing {
       music.pause()
     }
 
-    music1.volume = 0.8
-    music2.volume = 0.8
-    music3.volume = 0.8
-    musicFinal.volume = 0.8
+    music1.volume = 0
+    music2.volume = 0
+    music3.volume = 0
+    musicFinal.volume = 0
 
     let music = music1
     if (globals.level > 5) {
@@ -78,7 +80,7 @@ export default class Player extends Thing {
     if (!globals.level) {
       globals.lives = 3
       globals.level = 1
-      globals.powerup = 'none'
+      globals.powerup = 'pointer'
     }
     // mouse.setStyle("none")
 
@@ -106,6 +108,9 @@ export default class Player extends Thing {
       },
       shoot (keys, mouse, gamepad) {
         return (mouse.isLocked() && mouse.button) || gamepad?.buttons[1].pressed
+      },
+      changeWeapon (keys, mouse, gamepad) {
+        return keys.KeyQ || gamepad?.buttons[4].pressed || gamepad?.buttons[5].pressed
       },
 
       xMove (keys, mouse, gamepad) {
@@ -160,6 +165,12 @@ export default class Player extends Thing {
     // walking and friction
     let dx = this.inputs.get('xMove')
     let dy = this.inputs.get('yMove')
+
+    // Stop moving if in menu
+    if (this.inMenu) {
+      dx = 0
+      dy = 0
+    }
 
     // counter for view bobbing
     if (Math.abs(dx) + Math.abs(dy) > 0) {
@@ -232,7 +243,7 @@ export default class Player extends Thing {
     }
 
     // falling and jumping
-    if (this.inputs.pressed('jump')) {
+    if (this.inputs.pressed('jump') && !this.inMenu) {
       this.wannaJump = 6
     }
     if (this.onGround) {
@@ -255,17 +266,6 @@ export default class Player extends Thing {
       jump()
     }
 
-    if (this.wannaJump) {
-      const closestWall = this.getClosestWall()
-      if (closestWall) {
-        const kickSpeed = 8
-        this.speed[0] += closestWall.normal[0] * kickSpeed
-        this.speed[1] += closestWall.normal[1] * kickSpeed
-        this.after(20, null, 'disableAirControl')
-        jump()
-      }
-    }
-
     if (!this.inputs.get('jump') && this.speed[2] >= 0) {
       this.speed[2] /= 1.25
     }
@@ -279,8 +279,36 @@ export default class Player extends Thing {
     this.staircaseOffset = Math.max(this.staircaseOffset - 6, 0)
     this.disableAirControl = Math.max(this.disableAirControl - 1, 0)
 
+    if (this.inputs.get('changeWeapon')) {
+      if (!this.changeWeaponEdge) {
+        this.changeWeaponEdge = true
+
+        if (globals.powerup == "pointer") {
+          globals.powerup = "tranq"
+
+          const sound = assets.sounds.deploy
+          sound.playbackRate = u.random(1, 1.3)
+          sound.currentTime = 0
+          sound.volume = 1
+          sound.play()
+        }
+        else {
+          globals.powerup = "pointer"
+
+          const sound = assets.sounds.holster
+          sound.playbackRate = u.random(0.7, 1.3)
+          sound.currentTime = 0
+          sound.volume = 1
+          sound.play()
+        }
+      }
+    }
+    else {
+      this.changeWeaponEdge = false
+    }
+
     // shooting
-    if (this.inputs.get('shoot') && !this.timer('shoot')) {
+    if (this.inputs.get('shoot') && !this.timer('shoot') && !this.inMenu) {
       this.after(16, () => {}, 'shoot')
       this.after(12, () => {}, 'fire')
       const look = vec3.multiply(getScene().camera3D.lookVector, -1)
@@ -288,80 +316,20 @@ export default class Player extends Thing {
       let pos = vec3.add(this.position, vec3.multiply(side, 16))
       pos = vec3.add(pos, [0, 0, -14])
 
-      if (globals.powerup === 'shotgun') {
+      if (globals.powerup === 'pointer') {
         // Animation and Timing
-        this.after(24, () => {}, 'shoot')
-        this.after(30, () => {}, 'fire')
-
-        // Create bullets
-        for (let i = 0; i < 6; i++) {
-          const r = 0.15
-          let dir = vec3.add(look, [u.random(-r, r), u.random(-r, r), u.random(-r, r)])
-          dir = vec3.normalize(dir)
-          getScene().addThing(new Bullet(pos, dir, 28, this))
-        }
-        // Guarantee that one bullet will go straight ahead
-        getScene().addThing(new Bullet(pos, look, 28, this))
-
-        // Sound effect
-        const sound = assets.sounds.shotgun
-        sound.playbackRate = u.random(1, 1.3)
-        sound.currentTime = 0
-        sound.volume = 0.6
-        sound.play()
-
-        this.speed[0] -= look[0] * 4.5
-        this.speed[1] -= look[1] * 4.5
-        this.speed[2] -= look[2] * 2.5
-      } else if (globals.powerup === 'machinegun') {
-        // Animation and Timing
-        this.after(7, () => {}, 'shoot')
-        this.after(4, () => {}, 'fire')
+        this.after(1, () => {}, 'shoot')
+        this.after(1, () => {}, 'fire')
 
         // Create bullet
-        const r = 0.1
-        let dir = vec3.add(look, [u.random(-r, r), u.random(-r, r), u.random(-r, r)])
-        dir = vec3.normalize(dir)
-        getScene().addThing(new Bullet(pos, dir, 28, this))
-
-        // Sound effect
-        const sound = assets.sounds.machinegun
-        sound.playbackRate = u.random(1, 1.3)
-        sound.currentTime = 0
-        sound.volume = 0.6
-        sound.play()
-
-        this.speed[0] -= look[0] * 0.9
-        this.speed[1] -= look[1] * 0.9
-        this.speed[2] -= look[2] * 0.5
-      } else if (globals.powerup === 'rifle') {
-        // Animation and Timing
-        this.after(24, () => {}, 'shoot')
-        this.after(30, () => {}, 'fire')
-
-        // Create bullet
-        getScene().addThing(new Bullet(pos, look, 90, this))
-        getScene().addThing(new Bullet(vec3.add(pos, vec3.multiply(look, 10)), look, 90, this))
-        getScene().addThing(new Bullet(vec3.add(pos, vec3.multiply(look, 20)), look, 90, this))
-        getScene().addThing(new Bullet(vec3.add(pos, vec3.multiply(look, 30)), look, 90, this))
-        getScene().addThing(new Bullet(vec3.add(pos, vec3.multiply(look, 40)), look, 90, this))
-
-        const sound = assets.sounds.machinegun
-        sound.playbackRate = u.random(1, 1.3)
-        sound.currentTime = 0
-        sound.volume = 0.6
-        sound.play()
-
-        this.speed[0] -= look[0] * 3
-        this.speed[1] -= look[1] * 3
-        this.speed[2] -= look[2] * 1.5
+        getScene().addThing(new Pointer(pos, look, 45, this))
       } else {
         // Animation and Timing
         this.after(16, () => {}, 'shoot')
         this.after(12, () => {}, 'fire')
 
         // Create bullet
-        getScene().addThing(new Bullet(pos, look, 28, this))
+        getScene().addThing(new Bullet(pos, look, 45, this))
 
         const sound = assets.sounds.machinegun
         sound.playbackRate = u.random(1, 1.3)
@@ -376,9 +344,9 @@ export default class Player extends Thing {
 
         */
 
-        this.speed[0] -= look[0] * 3
-        this.speed[1] -= look[1] * 3
-        this.speed[2] -= look[2] * 1.5
+        this.speed[0] -= look[0] * 1
+        this.speed[1] -= look[1] * 1
+        this.speed[2] -= look[2] * 0.5
       }
     }
 
@@ -580,42 +548,17 @@ export default class Player extends Thing {
     }
 
     // Animation
-    if (globals.powerup === 'shotgun') {
-      gfx.set('modelMatrix', mat.getTransformation({
-        translation: [bobX - 2, -7 + knockback * 4, bobY - 1.8 - (knockback * 0.5)],
-        rotation: [0, -knockback / 3, Math.PI / -2],
-        scale: 80
-      }))
-      gfx.set('color', [0, 0, 1, 1])
-      gfx.setTexture(assets.textures.square)
-      gfx.drawMesh(assets.models.shotgun)
-    } else if (globals.powerup === 'machinegun') {
-      gfx.set('modelMatrix', mat.getTransformation({
-        translation: [bobX - 2, -7 + knockback * 0.9, bobY - 1.8],
-        rotation: [0, -knockback * 0.1, Math.PI / -2],
-        scale: 64
-      }))
-      gfx.set('color', [0.8, 0.8, 0, 1])
-      gfx.setTexture(assets.textures.square)
-      gfx.drawMesh(assets.models.machinegun)
-    } else if (globals.powerup === 'rifle') {
-      gfx.set('modelMatrix', mat.getTransformation({
-        translation: [bobX - 2, -7 + knockback * 0.2, bobY - 1.8 - (knockback * 0.5)],
-        rotation: [0, -knockback, Math.PI / -2],
-        scale: 64
-      }))
-      gfx.set('color', [0.9, 0, 0.8, 1])
-      gfx.setTexture(assets.textures.square)
-      gfx.drawMesh(assets.models.machinegun)
+    if (globals.powerup === 'pointer') {
+      // No viewmodel
     } else {
       gfx.set('modelMatrix', mat.getTransformation({
         translation: [bobX - 2, -7 + knockback * 0.2, bobY - 1.8 - (knockback * 0.5)],
         rotation: [0, -knockback, Math.PI / -2],
         scale: 64
       }))
-      gfx.set('color', [1, 0, 0, 1])
+      gfx.set('color', [0.304, 0.3, 0.302, 1])
       gfx.setTexture(assets.textures.square)
-      gfx.drawMesh(assets.models.pistol)
+      gfx.drawMesh(assets.models.tranq)
     }
   }
 
@@ -626,13 +569,13 @@ export default class Player extends Thing {
     ctx.save()
     ctx.font = 'italic bold 64px Times New Roman'
     ctx.textAlign = 'center'
-    ctx.translate(width / 2, height * 2 / 3)
+    ctx.translate(width / 2, height - 48)
     let scale = this.timer('timeBonus') ? u.map(this.timer('timeBonus') ** 2, 0, 1, 2.5, 1, true) : 1
     scale = Math.max(scale, this.timer('timeWarning') ? u.map(this.timer('timeWarning') ** 2, 0, 1, 1.5, 1, true) : 1)
     ctx.scale(scale, scale)
     const seconds = Math.max(this.time / 60, 0)
-    const time = seconds.toFixed(2)
-    ctx.fillStyle = 'red'
+    const time = seconds.toFixed(0)
+    ctx.fillStyle = 'black'
     if (this.timer('timeWarning')) {
       ctx.fillStyle = 'black'
     }
@@ -645,43 +588,30 @@ export default class Player extends Thing {
     ctx.restore()
 
     // crosshair
-    /*
-    const size = 10
-    ctx.save()
-    ctx.translate(width/2, height/2)
-    ctx.strokeStyle = "white"
-    ctx.lineWidth = 1
-    ctx.moveTo(-size, 0)
-    ctx.lineTo(size, 0)
-    ctx.moveTo(0, -size + 0.5)
-    ctx.lineTo(0, size + 0.5)
-    ctx.stroke()
-    ctx.restore()
-    */
     ctx.drawImage(assets.images.crosshair, width / 2 - 16, height / 2 - 16)
 
     ctx.save()
     ctx.translate(32, height - 48)
     ctx.font = 'italic 32px Times New Roman'
     {
-      const str = 'Lives: ' + globals.lives
-      ctx.fillStyle = 'darkBlue'
-      ctx.fillText(str, 0, 0)
-      ctx.fillStyle = 'white'
-      ctx.fillText(str, 4, -4)
-    }
-    ctx.translate(0, -48)
-    {
       const str = 'Level: ' + globals.level
-      ctx.fillStyle = 'darkBlue'
+      ctx.fillStyle = 'black'
       ctx.fillText(str, 0, 0)
       ctx.fillStyle = 'white'
       ctx.fillText(str, 4, -4)
     }
     ctx.restore()
+
+    // html
+
   }
 
   onDeath () {
     getScene().addThing(new DeathAnim())
+  }
+
+  openMenu(person) {
+    this.inMenu = true
+
   }
 }

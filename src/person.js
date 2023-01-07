@@ -5,9 +5,10 @@ import * as mat from './core/matrices.js'
 import * as u from './core/utils.js'
 import assets from './assets.js'
 import * as vec2 from './core/vector2.js'
+import * as vec3 from './core/vector3.js'
 import Player from './player.js'
 
-export default class Enemy extends Thing {
+export default class Person extends Thing {
   height = 64
   angle = 0
   time = 0
@@ -15,6 +16,8 @@ export default class Enemy extends Thing {
   texture = assets.textures.enemy
   friction = 0.85
   attackActive = false
+  following = false
+
 
   constructor (position) {
     super()
@@ -32,7 +35,16 @@ export default class Enemy extends Thing {
 
     this.behavior()
 
-    this.dead = this.dead || (!this.timer('hurt') && this.health <= 0)
+    if (!this.dead && this.health <= 0) {
+      this.dead = true
+
+      // Death sound
+      const sound = u.choose(assets.sounds.enemyHurt1, assets.sounds.enemyHurt2)
+      sound.playbackRate = u.random(0.9, 1.1)
+      sound.currentTime = 0
+      sound.play()
+    }
+
     for (const thing of this.getAllThingCollisions()) {
       if (
         thing.canDamageEnemies &&
@@ -42,17 +54,7 @@ export default class Enemy extends Thing {
         thing.owner !== this
       ) {
         thing.onHit(this)
-
-        const sound = u.choose(assets.sounds.enemyHurt1, assets.sounds.enemyHurt2)
-        sound.playbackRate = u.random(0.9, 1.1)
-        sound.currentTime = 0
-        sound.play()
-
         break
-      }
-
-      if (this.health > 0 && thing instanceof Player && Math.abs(thing.position[2] - this.position[2]) <= this.height / 2 + 24) {
-        thing.dead = true
       }
     }
   }
@@ -74,10 +76,13 @@ export default class Enemy extends Thing {
 
     // move towards player
     const player = game.getThing('player')
-    if (player && u.distance2d(player.position[0], player.position[1], this.position[0], this.position[1]) < 64 * 16) {
-      const accel = vec2.angleToVector(this.angle, 0.85)
-      this.speed[0] += accel[0]
-      this.speed[1] += accel[1]
+    if (this.following && player) {
+      let dist = u.distance2d(player.position[0], player.position[1], this.position[0], this.position[1]);
+      if (dist < 64 * 16 && dist > 200) {
+        const accel = vec2.angleToVector(this.angle, 0.85)
+        this.speed[0] += accel[0]
+        this.speed[1] += accel[1]
+      }
     }
 
     this.speed[0] *= this.friction
@@ -85,7 +90,7 @@ export default class Enemy extends Thing {
 
     this.move()
     this.position[2] += this.speed[2]
-    this.dead = this.dead || this.position[2] < 64
+    this.dead = this.dead || this.position[2] < 32
   }
 
   draw () {

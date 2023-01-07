@@ -10,11 +10,7 @@ import * as themes from './data/themes.js'
 import assets from './assets.js'
 import SpatialHash from './core/spatialhash.js'
 import Player from './player.js'
-import Enemy from './enemy.js'
-import Goal from './goal.js'
-import TimePickup from './timepickup.js'
-import OneUp from './oneup.js'
-import { ShotgunPickup, MachinegunPickup, RiflePickup } from './powerups.js'
+import Person from './person.js'
 
 export default class Terrain extends Thing {
   seaLevel = -256
@@ -232,16 +228,7 @@ export default class Terrain extends Thing {
     }
 
     const getTheme = () => {
-      if (globals.level <= 5 || !globals.level) {
-        return "asteroid"
-      }
-      if (globals.level === 15) {
-        return "hive"
-      }
-      if (globals.level > 10) {
-        return "cyber"
-      }
-      return "yard"
+      return "city1"
     }
 
     const getTexture = (tileType, textureType) => {
@@ -707,34 +694,12 @@ export default class Terrain extends Thing {
     let seed = Math.floor(Math.random() * 100000)
     // seed = 81492
 
-    // Init the parameterBuilder object
-    let parameterBuilder = globals.parameterBuilder
-    if (!parameterBuilder) {
-      parameterBuilder = new proc.GeneratorParams(seed)
-      parameterBuilder.setParametersForLevel(globals.level)
-      globals.parameterBuilder = parameterBuilder
-    }
-
     // Generate the world
-    let generated = globals.generated
-    if (!generated) {
-      // WARNING: Do not try this at home!
-      for (let i = 0; i < 10; i++) {
-        try {
-          // Generate the world
-          generated = proc.generateEverything(parameterBuilder)
-          break
-        } catch (e) {
-          console.log('Generation error: ' + e)
-          console.log(e)
-          console.log(parameterBuilder)
-          delete globals.generated
-          parameterBuilder.setParametersForLevel(globals.level)
-        }
-      }
+    let generated = proc.generateEverything()
+    globals.generated = generated
 
-      globals.generated = generated
-    }
+
+    console.log(globals.generated)
 
     // Set entity data
     this.startPoint = generated.startPoint
@@ -743,34 +708,21 @@ export default class Terrain extends Thing {
     this.presetClocks = generated.presetClocks
 
     // Write terrain data to map
-    proc.mergeTerrain(this.map, generated.terrain, [-1, -1])
-    proc.mergeTerrain(this.types, generated.types, [-1, -1])
+    
+    this.map = generated.terrain
+    this.types = generated.types
 
     this.locations = {
-      other: [],
-      path: [],
-      room: [],
-      gold: []
+      sidewalk: [],
     }
     for (const coord in this.map) {
       if (this.map[coord] < 30 && this.map[coord] >= 1) {
         const [x, y] = coord.split(',').map(Number)
         if (u.distance2d(x, y, this.startPoint[0], this.startPoint[1]) > 8) {
-          if (this.types[coord] === "floor") {
-            this.locations.room.push([x, y])
+          if (this.types[coord] === "sidewalk") {
+            this.locations.sidewalk.push([x, y])
             continue
           }
-          if (this.types[coord] === "wall") {
-            continue
-          }
-          if (this.types[coord] === "path") {
-            this.locations.path.push([x, y])
-            continue
-          }
-          if (this.types[coord] === "floor2") {
-            this.locations.gold.push([x, y])
-          }
-          this.locations.other.push([x, y])
         }
       }
     }
@@ -785,6 +737,7 @@ export default class Terrain extends Thing {
       ))
     }
 
+    // Locations
     const getLocations = (...types) => {
       const result = []
       for (const t of types) {
@@ -793,58 +746,12 @@ export default class Terrain extends Thing {
       return u.shuffle(result, u.randomizer())
     }
 
-    const enemyLocations = getLocations('room', 'gold')
+    const personLocations = getLocations("sidewalk")
     for (let i = 0; i < 5; i++) {
-      const coord = enemyLocations.pop()
+      const coord = personLocations.pop()
       if (coord) {
-        getScene().addThing(new Enemy([coord[0] * 64 + 32, coord[1] * 64 + 32, 0]))
+        getScene().addThing(new Person([coord[0] * 64 + 32, coord[1] * 64 + 32, 0]))
       }
     }
-
-    const itemLocations = getLocations('other')
-    {
-      const clockList = this.presetClocks.length > 0 ? this.presetClocks : [itemLocations.pop()]
-      for (const coord of clockList) {
-        if (coord) {
-          getScene().addThing(new TimePickup([coord[0] * 64 + 32, coord[1] * 64 + 32, 0]))
-        }
-      }
-    }
-
-    {
-      const coord = itemLocations.pop()
-      if (coord) {
-        getScene().addThing(new OneUp([coord[0] * 64 + 32, coord[1] * 64 + 32, 0]))
-      }
-    }
-
-    {
-      const gunLocations = itemLocations
-
-      let gunCount = 0
-      if (globals.level > 1) { gunCount = 2 }
-      if (globals.level > 6) { gunCount = 4 }
-      if (globals.level > 11) { gunCount = 7 }
-      // Bonus
-      if (globals.level === 3) { gunCount = 6 }
-      if (globals.level === 5) { gunCount = 1 }
-      if (globals.level === 8) { gunCount = 10 }
-      if (globals.level === 10) { gunCount = 2 }
-      if (globals.level === 12) { gunCount = 10 }
-      if (globals.level === 15) { gunCount = 12 }
-
-      for (let i = 0; i < gunCount; i++) {
-        const coord = gunLocations.pop()
-        const Gun = [ShotgunPickup, MachinegunPickup, RiflePickup][globals.level % 3]
-        if (coord) {
-          getScene().addThing(new Gun([coord[0] * 64 + 32, coord[1] * 64 + 32, 0]))
-        }
-      }
-    }
-
-    const g = getScene().addThing(new Goal())
-    g.position[0] = this.endPoint[0] * 64 - 32
-    g.position[1] = this.endPoint[1] * 64 - 32
-    g.position[2] = getThing('terrain').getGroundHeight(g.position[0], g.position[1]) + 64
   }
 }

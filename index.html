@@ -36,11 +36,47 @@
      color: black;
      transform: translateX(-50%) translateY(-50%) scale(110%);
    }
+
+   #guiContainer {
+    background-color: #1118;
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    z-index: 100;
+    font-family: Arial;
+
+   }
+
+   #gui {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: white;
+    border-radius: 1rem;
+    padding: 1rem;
+   }
+
+   [hidden] {
+    display: none !important;
+    }
   </style>
   <style id="cursorStyle"></style>
 
+
   <title>Starshot</title>
   <link rel="shortcut icon" href="favicon.png">
-  <body />
+  <body>
+    <div id="guiContainer" hidden>
+      <div id="gui">
+        What do you want to say?
+      <input ></input>
+      </div>
+    </div>
+  </body>
   <script src="src/core/bootup.js" type="module"></script>
 </html>

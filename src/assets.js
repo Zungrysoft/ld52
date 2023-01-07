@@ -39,9 +39,7 @@ const assets = {
     cylinder: 'cylinder.obj',
     plane: 'plane.obj',
     sphere: 'sphere.obj',
-    pistol: 'pistol.obj',
-    shotgun: 'shotgun.obj',
-    machinegun: 'machinegun.obj'
+    tranq: 'tranq.obj',
   },
 
   imageSources: {
@@ -60,6 +58,8 @@ const assets = {
     dirt: 'dirt.png',
     hive: 'hive_dblue.png',
     snow: 'snow.png',
+    window: 'window.png',
+    purpleFloor: 'stone_purple.png',
 
     // Skyboxes
     skybox1: 'skybox1.png',
@@ -104,6 +104,8 @@ const assets = {
     timePickup: 'timepickup.wav',
     oneUp: 'oneup.wav',
     weaponPickup: 'weapon.wav',
+    deploy: 'deploy.wav',
+    holster: 'holster.wav',
     music1: 'music/Starshot5.mp3',
     music2: 'music/Starshot4.mp3',
     music3: 'music/Starshot6.mp3',
