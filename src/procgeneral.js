@@ -1,3 +1,6 @@
+import * as vec2 from './core/vector2.js'
+import * as levelSelector from './levelselection.js'
+
 // Pass in a position in either string format or list format and it will convert it to list format
 export function stringToPosition (p) {
   let ret = p
@@ -50,7 +53,7 @@ export function adjustTerrain (terrain, amt) {
   for (const key in terrain) {
     terrain[key] = terrain[key] + amt
   }
-} 
+}
 
 export function isExtreme (height) {
   if (!height) {
@@ -65,105 +68,161 @@ export function isExtreme (height) {
   return false
 }
 
-export function generateEverything () {
-  const streetRad = 7;
-  const sidewalkRad = streetRad + 3;
-  const shelfRad = sidewalkRad + 1;
-  const totalSize = 100;
+// export function generateEverything () {
+//   const streetRad = 7;
+//   const sidewalkRad = streetRad + 3;
+//   const shelfRad = sidewalkRad + 1;
+//   const totalSize = 100;
 
-  let world = {
-    terrain: {},
-    types: {},
-  }
+//   let world = {
+//     terrain: {},
+//     types: {},
+//   }
 
-  // Base
-  {
-    let merge = generateFlat({
-      width: totalSize + 2,
-      length: totalSize + 2,
-      height: 18,
-      type: "street",
-    })
-    mergeTerrain(world, merge, [-1, -1])
-  }
+//   // Base
+//   {
+//     let merge = generateFlat({
+//       width: totalSize + 2,
+//       length: totalSize + 2,
+//       height: 18,
+//       type: "street",
+//     })
+//     mergeTerrain(world, merge, [-1, -1])
+//   }
+
+//   // Windows
+//   {
+//     let merge = generateFlat({
+//       width: totalSize,
+//       length: totalSize,
+//       height: 41,
+//       type: "wall",
+//     })
+//     mergeTerrain(world, merge, [0, 0])
+//   }
+
+//   // Shelf
+//   {
+//     let merge = generateFlat({
+//       width: shelfRad*2,
+//       length: totalSize,
+//       height: 8,
+//       type: "trim",
+//     })
+//     mergeTerrain(world, merge, [totalSize/2 - shelfRad, 0])
+//   }
+//   {
+//     let merge = generateFlat({
+//       width: totalSize,
+//       length: shelfRad*2,
+//       height: 8,
+//       type: "trim",
+//     })
+//     mergeTerrain(world, merge, [0, totalSize/2 - shelfRad])
+//   }
+
+//   // Sidewalk
+//   {
+//     let merge = generateFlat({
+//       width: sidewalkRad*2,
+//       length: totalSize,
+//       height: 2,
+//       type: "sidewalk",
+//     })
+//     mergeTerrain(world, merge, [totalSize/2 - sidewalkRad, 0])
+//   }
+//   {
+//     let merge = generateFlat({
+//       width: totalSize,
+//       length: sidewalkRad*2,
+//       height: 2,
+//       type: "sidewalk",
+//     })
+//     mergeTerrain(world, merge, [0, totalSize/2 - sidewalkRad])
+//   }
+
+//   // Street
+//   {
+//     let merge = generateFlat({
+//       width: streetRad*2,
+//       length: totalSize,
+//       height: 1,
+//       type: "street",
+//     })
+//     mergeTerrain(world, merge, [totalSize/2 - streetRad, 0])
+//   }
+//   {
+//     let merge = generateFlat({
+//       width: totalSize,
+//       length: streetRad*2,
+//       height: 1,
+//       type: "street",
+//     })
+//     mergeTerrain(world, merge, [0, totalSize/2 - streetRad])
+//   }
+
+//   // Return
+//   return {
+//     terrain: world.terrain,
+//     types: world.types,
+//     startPoint: [totalSize/2, totalSize/2],
+//     endPoint: [totalSize/2, 6],
+//     startAngle: 0,
+//   }
+// }
+
+function heightToType(height) {
+  if (height == 2) {return "sidewalk"}
+  if (height >= 8 && height <= 11) {return height % 2 == 0 ? "trim2" : "trim"}
+  if (height >= 12 && height <= 17) {return "machinery"}
+  if (height == 18) {return "street"}
 
   // Windows
-  {
-    let merge = generateFlat({
-      width: totalSize,
-      length: totalSize,
-      height: 41,
-      type: "wall",
-    })
-    mergeTerrain(world, merge, [0, 0])
+  if (height >= 19) {
+    let windowHeight = height % 4
+    if (windowHeight == 0) {return "wall"}
+    if (windowHeight == 1) {return "wall2"}
+    if (windowHeight == 2) {return "wall3"}
+    if (windowHeight == 3) {return "wall4"}
   }
 
-  // Shelf
-  {
-    let merge = generateFlat({
-      width: shelfRad*2,
-      length: totalSize,
-      height: 8,
-      type: "trim",
-    })
-    mergeTerrain(world, merge, [totalSize/2 - shelfRad, 0])
-  }
-  {
-    let merge = generateFlat({
-      width: totalSize,
-      length: shelfRad*2,
-      height: 8,
-      type: "trim",
-    })
-    mergeTerrain(world, merge, [0, totalSize/2 - shelfRad])
+  return "street"
+}
+
+export function generateEverything (level) {
+  const lvl = levelSelector.selectLevel(level)
+  const chunkSize = 64
+
+  let terrain = {}
+  let types = {}
+  let startPoint = [0, 0]
+
+  // Parse level file
+  for (let layer of lvl.layers) {
+    for (let chunk in layer.grid) {
+      let chunkData = layer.grid[chunk]
+
+      for (let ind in chunkData) {
+        let height = chunkData[ind]
+        if (height > 0) {
+          let point = [ind % chunkSize, Math.floor(ind / chunkSize)]
+          let finalPoint = vec2.add(point, stringToPosition(chunk))
+          terrain[finalPoint] = height
+          types[finalPoint] = heightToType(height)
+        }
+      }
+    }
+    for (let thing of layer.things) {
+      if (thing.name === "playerStart") {
+        startPoint = thing.position
+      }
+    }
   }
 
-  // Sidewalk
-  {
-    let merge = generateFlat({
-      width: sidewalkRad*2,
-      length: totalSize,
-      height: 2,
-      type: "sidewalk",
-    })
-    mergeTerrain(world, merge, [totalSize/2 - sidewalkRad, 0])
-  }
-  {
-    let merge = generateFlat({
-      width: totalSize,
-      length: sidewalkRad*2,
-      height: 2,
-      type: "sidewalk",
-    })
-    mergeTerrain(world, merge, [0, totalSize/2 - sidewalkRad])
-  }
-
-  // Street
-  {
-    let merge = generateFlat({
-      width: streetRad*2,
-      length: totalSize,
-      height: 1,
-      type: "street",
-    })
-    mergeTerrain(world, merge, [totalSize/2 - streetRad, 0])
-  }
-  {
-    let merge = generateFlat({
-      width: totalSize,
-      length: streetRad*2,
-      height: 1,
-      type: "street",
-    })
-    mergeTerrain(world, merge, [0, totalSize/2 - streetRad])
-  }
-  
-  // Return
   return {
-    terrain: world.terrain,
-    types: world.types,
-    startPoint: [totalSize/2, totalSize/2],
-    endPoint: [totalSize/2, 6],
-    startAngle: 0,
+    terrain: terrain,
+    types: types,
+    startPoint: startPoint,
+    startAngle: 180,
   }
 }

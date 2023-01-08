@@ -27,7 +27,7 @@ export default class TitleMenu extends Thing {
 
     if (this.time > 30 && (Object.keys(game.keysPressed).length || game.mouse.button)) {
       delete game.globals.generated
-      game.mouse.lock()
+      //game.mouse.lock()
       game.setNextScene()
     }
   }

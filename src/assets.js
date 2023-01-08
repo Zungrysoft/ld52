@@ -1,7 +1,6 @@
 import Player from './player.js'
 import Terrain from './terrain.js'
 import DemoHelper from './demohelper.js'
-import Goal from './goal.js'
 import TitleMenu from './titlemenu.js'
 
 const assets = {
@@ -46,20 +45,30 @@ const assets = {
     // Map
     stone: 'stone_grey.png',
     lightStone: 'stone_lgrey.png',
-    stoneFloor: 'stone_grey_tile.png',
-    roomWall: 'stone_purple_brick.png',
     goldenFloor: 'stone_gold.png',
-    goldenWall: 'stone_gold_brick.png',
-    tech1: 'tech_lgreen.png',
-    techStone: 'stone_dblue.png',
-    techFloor: 'stone_dblue_tile.png',
-    wood: 'concrete_wall.png',
-    cementTile: 'concrete_tile.png',
-    dirt: 'dirt.png',
-    hive: 'hive_dblue.png',
-    snow: 'snow.png',
-    window: 'window.png',
+    goldenBrick: 'stone_gold_brick.png',
     purpleFloor: 'stone_purple.png',
+    purpleBrick: 'stone_purple_brick.png',
+    concreteTile: 'concrete_tile.png',
+    concreteComputer: 'concrete_computer.png',
+    window: 'window.png',
+    window2: 'window2.png',
+    window3: 'window3.png',
+    window4: 'window4.png',
+
+    roof: 'stone_black_smalltile.png',
+
+    // Organs
+    brain: "brain.png",
+    eyeball: "eyeball.png",
+    finger: "finger.png",
+    heart: "heart.png",
+    kidney: "kidney.png",
+    liver: "liver.png",
+    lungs: "lungs.png",
+    tongue: "tongue.png",
+    organShadow: "shadow.png",
+    organBad: "bad.png",
 
     // Skyboxes
     skybox1: 'skybox1.png',
@@ -73,12 +82,6 @@ const assets = {
 
     // Projectiles
     turretbullet: 'turretbullet.png',
-
-    // Collectibles
-    goal: 'pickup_flag.png',
-    oneUp: 'pickup_oneup.png',
-    visionPickup: 'pickup_eye.png',
-    timePickup: 'pickup_clock.png',
 
     // Misc
     circle: 'circle.png',
@@ -121,7 +124,6 @@ const assets = {
     Terrain,
     Player,
     DemoHelper,
-    Goal,
     TitleMenu
   }
 }

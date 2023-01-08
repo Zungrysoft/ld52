@@ -69,5 +69,7 @@ export default class Bullet extends Thing {
     other.health -= 1
     this.dead = true
     other.after(15, () => {}, 'hurt')
+
+    this.owner.targetAcquired(other)
   }
 }

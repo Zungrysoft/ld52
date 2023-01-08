@@ -204,15 +204,14 @@ export function toTimeString (time, precision = 1) {
   return minutes + (seconds < 10 ? ':0' : ':') + seconds.toFixed(precision)
 }
 
-export function shuffle (array, rand) {
+export function shuffle (array) {
   let currentIndex = array.length
   let randomIndex
-  if (!rand) { rand = random }
 
   // While there remain elements to shuffle.
   while (currentIndex !== 0) {
     // Pick a remaining element.
-    randomIndex = Math.floor(rand() * currentIndex)
+    randomIndex = Math.floor(Math.random() * currentIndex)
     currentIndex -= 1
 
     // And swap it with the current element.

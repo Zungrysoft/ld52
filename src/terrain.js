@@ -11,6 +11,7 @@ import assets from './assets.js'
 import SpatialHash from './core/spatialhash.js'
 import Player from './player.js'
 import Person from './person.js'
+import * as levelData from './data/levels.js'
 
 export default class Terrain extends Thing {
   seaLevel = -256
@@ -690,16 +691,17 @@ export default class Terrain extends Thing {
   }
 
   generate () {
-    // Generate seed
-    let seed = Math.floor(Math.random() * 100000)
-    // seed = 81492
+
+    if (!globals.level) {
+      globals.level = 1
+    }
 
     // Generate the world
-    let generated = proc.generateEverything()
+    let generated = proc.generateEverything(globals.level)
     globals.generated = generated
 
 
-    console.log(globals.generated)
+
 
     // Set entity data
     this.startPoint = generated.startPoint
@@ -708,7 +710,7 @@ export default class Terrain extends Thing {
     this.presetClocks = generated.presetClocks
 
     // Write terrain data to map
-    
+
     this.map = generated.terrain
     this.types = generated.types
 
@@ -728,6 +730,25 @@ export default class Terrain extends Thing {
     }
   }
 
+  randomizeNpc (index) {
+    const lvl = globals.level - 1
+
+    // For the first few npcs, use the preset npcs from the level file
+    let presetNpcs = levelData.data[lvl].preset_npcs
+    if (index < presetNpcs.length) {
+      return presetNpcs[index]
+    }
+
+    // The rest are randomly generated from the level file
+    let qualities = []
+    for (let qualityEntry of levelData.data[lvl].quality_chances) {
+      if (Math.random() < qualityEntry.chance) {
+        qualities.push(qualityEntry.quality)
+      }
+    }
+    return qualities
+  }
+
   populate () {
     // add the player to the scene if we're not in the title screen
     if (!getThing('title')) {
@@ -743,14 +764,19 @@ export default class Terrain extends Thing {
       for (const t of types) {
         result.push(...this.locations[t])
       }
-      return u.shuffle(result, u.randomizer())
+      return u.shuffle(result)
     }
 
     const personLocations = getLocations("sidewalk")
-    for (let i = 0; i < 5; i++) {
+    if (!globals.level) {
+      globals.level = 1
+    }
+    const npcCount = levelData.data[globals.level - 1].npc_count
+    for (let i = 0; i < npcCount; i++) {
       const coord = personLocations.pop()
       if (coord) {
-        getScene().addThing(new Person([coord[0] * 64 + 32, coord[1] * 64 + 32, 0]))
+        let qualities = this.randomizeNpc(i)
+        getScene().addThing(new Person([coord[0] * 64 + 32, coord[1] * 64 + 32, 0], qualities))
       }
     }
   }

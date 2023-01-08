@@ -5,11 +5,31 @@ export const data = {
     "tiles": {
       "wall": {
         "wall": "window",
-        "floor": "window",
+        "floor": "roof",
+        "noCarve": true,
+      },
+      "wall2": {
+        "wall": "window2",
+        "floor": "roof",
+        "noCarve": true,
+      },
+      "wall3": {
+        "wall": "window3",
+        "floor": "roof",
+        "noCarve": true,
+      },
+      "wall4": {
+        "wall": "window4",
+        "floor": "roof",
         "noCarve": true,
       },
       "trim": {
-        "wall": "roomWall",
+        "wall": "goldenBrick",
+        "floor": "goldenFloor",
+        "noCarve": true,
+      },
+      "trim2": {
+        "wall": "purpleBrick",
         "floor": "purpleFloor",
         "noCarve": true,
       },
@@ -18,7 +38,12 @@ export const data = {
         "floor": "lightStone",
         "noCarve": true,
       },
-      "street": {
+      "machinery": {
+        "wall": "concreteComputer",
+        "floor": "concreteTile",
+        "noCarve": true,
+      },
+      "default": {
         "wall": "stone",
         "floor": "stone",
         "noCarve": true,

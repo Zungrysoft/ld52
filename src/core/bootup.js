@@ -14,6 +14,8 @@ import {
 import * as gfx from './webgl.js'
 import assets from '../assets.js'
 
+document.addEventListener('contextmenu', event => event.preventDefault());
+
 function loadImages (images) {
   return new Promise(resolve => {
     const result = {}

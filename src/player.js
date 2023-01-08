@@ -19,6 +19,8 @@ import Bullet from './bullet.js'
 import Pointer from './pointer.js'
 import DeathAnim from './deathanim.js'
 import LevelStart from './levelstart.js'
+import * as questions from './data/questions.js'
+import * as levelData from './data/levels.js'
 
 export default class Player extends Thing {
   height = 90
@@ -37,7 +39,6 @@ export default class Player extends Thing {
   width = 16
   canDash = true
   wannaJump = 0
-  coyoteFrames = 0
   staircaseOffset = 0
   inputs = null
   lastFallSpeed = 0
@@ -52,7 +53,8 @@ export default class Player extends Thing {
   walkFrames = 0
   walkFrameAccel = 0
   slowTime = 0
-  inMenu = false
+  inMenu = true
+  talkingTo = null
 
   constructor (position, angle = 0) {
     super()
@@ -75,17 +77,19 @@ export default class Player extends Thing {
       music = music3
     }
     music.loop = true
-    //music.volume = 0.5
-    music.play()
+    // music.volume = 0.5
+    // music.play()
 
     if (!globals.level) {
-      globals.lives = 3
       globals.level = 1
-      globals.powerup = 'pointer'
     }
+    globals.powerup = 'pointer'
     // mouse.setStyle("none")
 
     // getScene().addThing(new DemoHelper())
+
+    // Set up menu stuff
+    this.setMenuData()
 
     // this.position[2] = 10000
     this.position = position
@@ -243,29 +247,7 @@ export default class Player extends Thing {
       this.lastFallSpeed = this.speed[2]
     }
 
-    // falling and jumping
-    if (this.inputs.pressed('jump') && !this.inMenu) {
-      this.wannaJump = 6
-    }
-    if (this.onGround) {
-      this.coyoteFrames = 10
-    }
 
-    const jump = () => {
-      this.speed[2] = 10
-      this.wannaJump = 0
-      this.coyoteFrames = 0
-      this.stretch = [0.3, 1.4]
-      const sound = assets.sounds.playerJump
-      sound.volume = 0.2
-      sound.playbackRate = u.random(1, 1.2)
-      sound.currentTime = 0
-      sound.play()
-    }
-
-    if (this.wannaJump && this.coyoteFrames) {
-      jump()
-    }
 
     if (!this.inputs.get('jump') && this.speed[2] >= 0) {
       this.speed[2] /= 1.25
@@ -275,8 +257,6 @@ export default class Player extends Thing {
       // resetScene()
       this.dead = true
     }
-    this.wannaJump = Math.max(this.wannaJump - 1, 0)
-    this.coyoteFrames = Math.max(this.coyoteFrames - 1, 0)
     this.staircaseOffset = Math.max(this.staircaseOffset - 6, 0)
     this.disableAirControl = Math.max(this.disableAirControl - 1, 0)
 
@@ -516,7 +496,7 @@ export default class Player extends Thing {
     if (mouse.click && !this.inMenu) {
       mouse.lock()
     }
-    
+
     if (mouse.isLocked()) {
       scene.camera3D.yaw += mouse.delta[0] / 500
       scene.camera3D.pitch += mouse.delta[1] / 500
@@ -556,11 +536,11 @@ export default class Player extends Thing {
       // No viewmodel
     } else {
       gfx.set('modelMatrix', mat.getTransformation({
-        translation: [bobX - 2, -7 + knockback * 0.2, bobY - 1.8 - (knockback * 0.5)],
-        rotation: [0, -knockback, Math.PI / -2],
+        translation: [bobX - 2, -7 + knockback * 0.1, bobY - 1.8 - (knockback * 0.2)],
+        rotation: [0, -knockback * 0.8, Math.PI / -2],
         scale: 64
       }))
-      gfx.set('color', [0.304, 0.3, 0.302, 1])
+      gfx.set('color', [0.21, 0.2, 0.205, 1])
       gfx.setTexture(assets.textures.square)
       gfx.drawMesh(assets.models.tranq)
     }
@@ -594,6 +574,15 @@ export default class Player extends Thing {
     // crosshair
     ctx.drawImage(assets.images.crosshair, width / 2 - 16, height / 2 - 16)
 
+    // Organs
+    let organScale = 128
+    let organs = levelData.data[globals.level-1].organs
+    let pos = 1
+    for (let organ of organs) {
+      ctx.drawImage(assets.images[organ], width - (pos * organScale), height - organScale, organScale, organScale)
+      pos += 1
+    }
+
     ctx.save()
     ctx.translate(32, height - 48)
     ctx.font = 'italic 32px Times New Roman'
@@ -614,11 +603,290 @@ export default class Player extends Thing {
     getScene().addThing(new DeathAnim())
   }
 
+  // Menu stuff
+  closeTitleMenu = () => {
+    this.inMenu = false
+
+    // Hide menu
+    document.getElementById("levelMenu").setAttribute("hidden", true)
+
+    // Switch the mouse back to first-person mode
+    game.mouse.lock()
+  }
+
+  setMenuData() {
+    // Make sure menu is shown
+    document.getElementById("levelMenu").removeAttribute("hidden")
+    document.getElementById("finishMenu").setAttribute("hidden", true)
+    game.mouse.unlock()
+    this.inMenu = true
+
+    // Set menu data
+    let lvl = globals.level - 1
+    document.getElementById("titleText").innerText = "Level " + (lvl + 1)
+    document.getElementById("promptText").innerText = levelData.data[lvl].prompt
+    document.getElementById("closeButton").onclick = this.closeTitleMenu
+
+    // Create Organ graphics
+    let imageDiv = document.getElementById("organImages")
+    imageDiv.innerHTML = ''; // Clear existing graphics
+    for (let organ of levelData.data[lvl].organs) {
+      // Organ graphic
+      let img = document.createElement("img");
+      img.setAttribute("src", "images/" + organ + ".png")
+      img.setAttribute("width", 192)
+      img.setAttribute("height", 192)
+      img.setAttribute("class", "organImage")
+      imageDiv.appendChild(img)
+    }
+  }
+
+  targetAcquired(person) {
+    // Show menu
+    document.getElementById("finishMenu").removeAttribute("hidden")
+    game.mouse.unlock()
+    this.inMenu = true
+
+    // Determine a win or loss
+    let lvl = globals.level - 1
+    const qualitiesBanned = levelData.data[lvl].qualities_banned
+    const qualitiesRequired = levelData.data[lvl].qualities_required
+    let failures = []
+    // Check that none of the banned qualities are present in this target
+    for (let entry of qualitiesBanned) {
+      if (person.qualities.includes(entry.quality)) {
+        failures.push(entry)
+      }
+    }
+    // Check that all of the required qualities are present in this target
+    for (let entry of qualitiesRequired) {
+      if (!person.qualities.includes(entry.quality)) {
+        failures.push(entry)
+      }
+    }
+
+    // Create Organ graphics
+    let imageDiv = document.getElementById("organImagesFinish")
+    imageDiv.innerHTML = ''; // Clear existing graphics
+    for (let organ of levelData.data[lvl].organs) {
+      // Determine if the organ is bad. If so, cross it out
+      let organBad = false
+      for (let failure of failures) {
+        if (failure.organ === organ || failure.organ === "all") {
+          organBad = true
+          break
+        }
+      }
+
+      // Organ graphic
+      let organName = organBad ? (organ + "_bad") : organ
+      let img = document.createElement("img");
+      img.setAttribute("src", "images/" + organName + ".png")
+      img.setAttribute("width", 192)
+      img.setAttribute("height", 192)
+      img.setAttribute("class", "organImage")
+      imageDiv.appendChild(img)
+    }
+
+    if (failures.length == 0) {
+      this.endLevelSuccess()
+    }
+    else {
+      this.endLevelFailure(failures)
+    }
+  }
+
+  endLevelSuccess() {
+    // Set menu data
+    let lvl = globals.level - 1
+    document.getElementById("titleTextFinish").innerText = "Level " + (lvl + 1) + " Complete!"
+    document.getElementById("issueText").innerText = ""
+    document.getElementById("solutionText").innerText = ""
+    document.getElementById("closeButtonFinish").innerText = "Next Level"
+    document.getElementById("closeButtonFinish").onclick = this.nextLevel
+  }
+
+  endLevelFailure(failures) {
+    // Parse failures data
+    let issueText = failures.length > 1 ? "Issues: " : "Issue: "
+    for (let failure of failures) {
+      issueText += failure.issue + ", "
+    }
+    issueText = issueText.substring(0, issueText.length-2)
+
+    // Set menu data
+    let lvl = globals.level - 1
+    document.getElementById("titleTextFinish").innerText = "Level " + (lvl + 1) + " Failed"
+    document.getElementById("issueText").innerText = issueText
+    document.getElementById("solutionText").innerText = failures[0].solution
+    document.getElementById("closeButtonFinish").innerText = "Retry"
+    document.getElementById("closeButtonFinish").onclick = this.retryLevel
+  }
+
+  nextLevel() {
+    globals.level += 1
+    game.resetScene()
+  }
+
+  retryLevel() {
+    game.resetScene()
+  }
+
+  // Conversation stuff
+  weightedSelection(list, seed) {
+    let sum = 0
+    for (let entry of list) {
+      sum += entry.weight
+    }
+    let selected = seed % sum
+    for (let entry of list) {
+      selected -= entry.weight
+      if (selected < 0) {
+        return entry.value
+      }
+    }
+    return list[0].value
+  }
+
+  askQuestion = (e) => {
+    // Get the question id
+    let question_id = e.srcElement.id
+
+    // Set the person's response
+    let mode = "default"
+    for (let quality of this.talkingTo.qualities) {
+      if (("responses_" + quality) in questions.data[question_id]) {
+        mode = quality
+      }
+    }
+    this.talkingTo.recentResponse = this.weightedSelection(questions.data[question_id]["responses_" + mode], this.talkingTo.conversationSeed)
+
+    // Add question to already asked list
+    this.talkingTo.alreadyAsked.push(question_id)
+
+    // Add friendliness
+    const friendlyQualities = questions.data[question_id].friendliness_qualities
+    for (let quality of this.talkingTo.qualities) {
+      if (friendlyQualities.includes(quality)) {
+        this.talkingTo.friendliness += 10
+      }
+    }
+    if (friendlyQualities.includes("all")) {
+      this.talkingTo.friendliness += 10
+    }
+
+    // Add conversation relevance
+    for (let topic in questions.data[question_id].topic_relevance) {
+      let added = questions.data[question_id].topic_relevance[topic].added
+      this.talkingTo.topicRelevance[topic] = (this.talkingTo.topicRelevance[topic] || 0) + added
+    }
+
+    // Some questions will cause the NPC to follow you under certain conditions
+    for (let cond of questions.data[question_id].follow_conditions) {
+      if (cond === "any" || this.talkingTo.qualities.includes(cond)) {
+        this.talkingTo.following = true
+        this.talkingTo.followingEnabled = true
+      }
+    }
+
+    // Finish by setting the conversation data anew
+    this.setConversationData()
+  }
+
+  setConversationData() {
+    // Set response to previous question
+    document.getElementById("response").innerText = this.talkingTo.recentResponse
+
+    // Clear existing question buttons
+    let talkContainer = document.getElementById("talkContainer")
+    talkContainer.innerHTML = '';
+
+    for (var question in questions.data) {
+      let q = questions.data[question]
+
+      // Check question hasn't already been asked
+      if (this.talkingTo.alreadyAsked.includes(question)) {
+        continue
+      }
+
+      // Check friendliness score
+      if (this.talkingTo.friendliness < q.friendliness_required) {
+        continue
+      }
+
+      // Check minimum level
+      if (globals.level < q.level_required) {
+        continue
+      }
+
+      // Check conversation relevance
+      let relevant = true
+      for (let topic in q.topic_relevance) {
+        // Track number of topics this question is relevant to
+        let theirRelevance = this.talkingTo.topicRelevance[topic] || 0
+        if (theirRelevance < q.topic_relevance[topic].required) {
+          relevant = false
+          break
+        }
+      }
+      if (!relevant) {
+        continue
+      }
+
+      // All checks passed, render the question
+      const newButton = document.createElement("button");
+      newButton.innerText = this.weightedSelection(q.options, this.talkingTo.conversationSeed)
+      newButton.id = question
+      newButton.onclick = this.askQuestion
+      talkContainer.appendChild(newButton)
+    }
+
+    // Set follow button
+    let followButton = document.getElementById("followButton")
+    if (this.talkingTo.followingEnabled) {
+      followButton.removeAttribute("hidden")
+      if (this.talkingTo.following) {
+        followButton.onclick = () => {this.talkingTo.following = false; this.talkingTo.recentResponse = "Umm, okay"; this.setConversationData()}
+        followButton.innerText = "Stop following me."
+      }
+      else {
+        followButton.onclick = () => {this.talkingTo.following = true; this.talkingTo.recentResponse = "Alright"; this.setConversationData()}
+        followButton.innerText = "Follow me."
+      }
+    }
+    else {
+      followButton.setAttribute("hidden", false)
+    }
+  }
+
+  closeMenu = () => {
+    this.inMenu = false
+
+    // Hide menu
+    document.getElementById("guiContainer").setAttribute("hidden", true)
+
+    // Switch the mouse back to first-person mode
+    game.mouse.lock()
+  }
+
   openMenu(person) {
     this.inMenu = true
+    this.talkingTo = person
+
+    // Reset some data on the person
+    // this.talkingTo.alreadyAsked = []
+    this.talkingTo.recentResponse = "..."
+
+    // Show menu
     let menu = document.getElementById("guiContainer")
     menu.removeAttribute("hidden")
 
-    game.mouse.unlock();
+    // Set data
+    this.setConversationData()
+
+    // Set exit button
+    document.getElementById("exitButton").onclick = this.closeMenu
+
+    game.mouse.unlock()
   }
 }

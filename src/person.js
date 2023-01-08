@@ -17,15 +17,25 @@ export default class Person extends Thing {
   friction = 0.85
   attackActive = false
   following = false
+  followingEnabled = false
 
+  // Conversation stuff
+  conversationSeed = 0
+  recentResponse = ""
+  friendliness = 0
+  topicRelevance = []
+  qualities = ["drunkard"]
+  alreadyAsked = []
 
-  constructor (position) {
+  constructor (position, qualities) {
     super()
     this.position = position
     this.groundHeight = game.getThing('terrain').getGroundHeight(this.position[0], this.position[1])
     this.position[2] = this.groundHeight + this.height
     this.speed[2] = 0
-    this.after(60, () => this.angleUpdate())
+    this.after(20, () => this.angleUpdate())
+    this.conversationSeed = Math.floor(Math.random() * 1000000)
+    this.qualities = qualities
   }
 
   update () {
@@ -79,7 +89,7 @@ export default class Person extends Thing {
     if (this.following && player) {
       let dist = u.distance2d(player.position[0], player.position[1], this.position[0], this.position[1]);
       if (dist < 64 * 16 && dist > 200) {
-        const accel = vec2.angleToVector(this.angle, 0.85)
+        const accel = vec2.angleToVector(this.angle, 1.3)
         this.speed[0] += accel[0]
         this.speed[1] += accel[1]
       }
