@@ -232,6 +232,16 @@ export function getThing (thing) {
   return scene.namedThings[thing]
 }
 
+export function findByClass (classname) {
+  let ret = []
+  for (let thing of scene.things) {
+    if (thing.constructor.name === classname) {
+      ret.push(thing)
+    }
+  }
+  return ret
+}
+
 export function getFramerate () {
   return frameRate
 }

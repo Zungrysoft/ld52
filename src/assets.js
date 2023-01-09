@@ -49,12 +49,14 @@ const assets = {
     goldenBrick: 'stone_gold_brick.png',
     purpleFloor: 'stone_purple.png',
     purpleBrick: 'stone_purple_brick.png',
+    greyBrick: 'stone_grey_brick.png',
     concreteTile: 'concrete_tile.png',
     concreteComputer: 'concrete_computer.png',
     window: 'window.png',
     window2: 'window2.png',
     window3: 'window3.png',
     window4: 'window4.png',
+    water: 'water.png',
 
     roof: 'stone_black_smalltile.png',
 
@@ -109,9 +111,6 @@ const assets = {
     weaponPickup: 'weapon.wav',
     deploy: 'deploy.wav',
     holster: 'holster.wav',
-    music1: 'music/Starshot5.mp3',
-    music2: 'music/Starshot4.mp3',
-    music3: 'music/Starshot6.mp3',
     musicFinal: 'music/music11.mp3',
   },
 

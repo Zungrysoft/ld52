@@ -18,6 +18,8 @@ export default class Person extends Thing {
   attackActive = false
   following = false
   followingEnabled = false
+  tranquilized = false
+  caughtYou = false
 
   // Conversation stuff
   conversationSeed = 0

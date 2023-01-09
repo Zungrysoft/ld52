@@ -33,6 +33,11 @@ export const data = {
         "floor": "purpleFloor",
         "noCarve": true,
       },
+      "trim3": {
+        "wall": "greyBrick",
+        "floor": "stone",
+        "noCarve": true,
+      },
       "sidewalk": {
         "wall": "lightStone",
         "floor": "lightStone",

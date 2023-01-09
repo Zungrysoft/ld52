@@ -18,10 +18,10 @@ export default class TitleMenu extends Thing {
     super.update()
     this.time += 1
     const cam = game.getScene().camera3D
-    cam.pitch = 0.2
-    const a = this.time / 200 + Math.PI * 2 * 5 / 8
+    cam.pitch = 0.9
+    const a = (Math.sin(this.time / 70) / 100 + Math.PI * 2 * 5 / 8) + 0.5
     const r = 30 * 64
-    cam.position = [Math.sin(a) * r + 15 * 64, Math.cos(a) * r + 35 * 64, 64 * 18]
+    cam.position = [Math.sin(a) * r + 37 * 64, Math.cos(a) * r + 32 * 64, 64 * 30]
     cam.yaw = -a + Math.PI / 2
     // game.getScene().camera3D.pitch += 0.02
 
@@ -35,14 +35,14 @@ export default class TitleMenu extends Thing {
   draw () {
     const { ctx } = game
     ctx.save()
-    const name = 'Starshot'
+    const name = 'Organ-ized Crime'
     // ctx.fillStyle = "white"
     ctx.font = 'italic bold 96px Times New Roman'
     // ctx.font = "bold 96px Courier New"
     ctx.fillStyle = 'black'
     ctx.translate(120, 200)
     ctx.fillText(name, 0, 0)
-    ctx.fillStyle = u.colorToString(...u.hsvToRgb(this.time / 300, 1, 1))
+    ctx.fillStyle = u.colorToString(...u.hsvToRgb(0, 1, (Math.sin(this.time / 30)*0.4 + 0.6)))
     ctx.translate(8, -8)
     ctx.fillText(name, 0, 0)
     ctx.restore()

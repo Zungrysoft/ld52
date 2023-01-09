@@ -173,9 +173,16 @@ export function isExtreme (height) {
 
 function heightToType(height) {
   if (height == 2) {return "sidewalk"}
-  if (height >= 8 && height <= 11) {return height % 2 == 0 ? "trim2" : "trim"}
+  if (height >= 8 && height <= 11) {
+    let trimHeight = height % 4
+    if (trimHeight == 0) {return "trim3"}
+    if (trimHeight == 1) {return "trim"}
+    if (trimHeight == 2) {return "trim3"}
+    if (trimHeight == 3) {return "trim2"}
+  }
   if (height >= 12 && height <= 17) {return "machinery"}
   if (height == 18) {return "street"}
+  if (height == 59 || height == 64) {return "trim3"}
 
   // Windows
   if (height >= 19) {

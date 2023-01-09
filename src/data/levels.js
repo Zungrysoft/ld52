@@ -31,8 +31,8 @@ export const data = [
             ["gamer", "drunkard"],
         ],
         quality_chances: [
-            { quality: "drunkard", chance: 0.5 },
-            { quality: "gamer", chance: 0.3 },
+            { quality: "drunkard", chance: 1 },
+            { quality: "gamer", chance: 0.5 },
         ],
     },
     {
@@ -46,10 +46,12 @@ export const data = [
             },
         ],
         qualities_banned: [],
-        prompt: "We got a real moneybags customer who's looking to compete in the Triathalon next month. To help him out, he needs a new pair of lungs. Good breathing is part of a good athlete, after all. We'll wait until after the sale to tell him about steroids.",
+        prompt: "We got a real moneybags customer who's looking to compete in the Triathalon next month. To help him out, he needs a new pair of lungs. Good breathing is part of a good athlete, after all. We'll wait until after the sale to tell him about steroids.\n\nFor this order, it's not good enough for the lungs to just be healthy. The donor must have exceptionally strong lungs.",
         npc_count: 7,
         preset_npcs: [
             ["athletic", "drunkard"],
+            ["athletic"],
+            ["athletic"],
         ],
         quality_chances: [
             { quality: "drunkard", chance: 0.8 },
@@ -99,8 +101,9 @@ export const data = [
         ],
         qualities_banned: [],
         prompt: "We got a customer in who had his tongue cut out by the mob. Here's the kicker, he's a food critic! It's a real tragedy I tell ya. To make things right, we're gonna find him a new tongue with a real refined palate. You know what they say, \"Create a problem, sell the solution.\"",
-        npc_count: 6,
+        npc_count: 12,
         preset_npcs: [
+            ["foodie", "musician", "snob"],
             ["foodie", "musician", "snob"],
         ],
         quality_chances: [
@@ -131,6 +134,7 @@ export const data = [
         npc_count: 4,
         preset_npcs: [
             ["boring"],
+            ["drunkard", "smoker"]
         ],
         quality_chances: [
             { quality: "smoker", chance: 0.6 },
@@ -164,8 +168,8 @@ export const data = [
                 solution: ""
             },
         ],
-        prompt: "We just had a high-profile order come in. Guy wants to be a world-class E-Sports player and he wants us to find a donor with really nimble fingers so he can get good instantly. Now, our job isn't to ask such trifling questions as, \"Does that make any sense?\" or, \"Are you a fucking idiot?\" Our job is to do our job. So go out there and get me a gamer finger!\n\nOh, we also need another one of those really athletic lungs. So make sure he's got one of those too.",
-        npc_count: 1,
+        prompt: "We just had a high-profile order come in. Guy wants to be a world-class E-Sports player and he wants us to find a donor with really nimble fingers so he can get good instantly. Now, our job isn't to ask such trifling questions as, \"Does that make any sense?\" or, \"Are you a fucking idiot?\" Our job is to do our job. So go out there and get me a gamer finger!\n\nOh, we also need another one of those extra strong lungs. So make sure he's got one of those too.",
+        npc_count: 7,
         preset_npcs: [
             ["pianist", "trombone_player", "drunkard", "nimble", "big_lungs", "multi_instrumentalist"],
             ["pianist", "drunkard", "nimble"],

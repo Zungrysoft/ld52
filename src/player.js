@@ -42,7 +42,7 @@ export default class Player extends Thing {
   staircaseOffset = 0
   inputs = null
   lastFallSpeed = 0
-  time = 60 * 60 * 3
+  time = 0
   showGui = true // cutscenes set this to false
   deliveredCount = 0
   sprite = null
@@ -58,27 +58,6 @@ export default class Player extends Thing {
 
   constructor (position, angle = 0) {
     super()
-
-    const { music1, music2, music3, musicFinal } = assets.sounds
-    for (const music of [music1, music2, music3, musicFinal]) {
-      music.pause()
-    }
-
-    music1.volume = 0
-    music2.volume = 0
-    music3.volume = 0
-    musicFinal.volume = 0
-
-    let music = music1
-    if (globals.level > 5) {
-      music = music2
-    }
-    if (globals.level > 10) {
-      music = music3
-    }
-    music.loop = true
-    // music.volume = 0.5
-    // music.play()
 
     if (!globals.level) {
       globals.level = 1
@@ -165,7 +144,7 @@ export default class Player extends Thing {
   update () {
     this.inputs.update()
     const scene = getScene()
-    this.time -= 1
+    this.time += 1
 
     // walking and friction
     let dx = this.inputs.get('xMove')
@@ -366,18 +345,6 @@ export default class Player extends Thing {
         break
       }
     }
-
-    // dramatic sounds at end of timer
-    if (this.time % 60 === 0 && this.time < 300 - 60 && this.time > 0) {
-      const sound = assets.sounds.impact
-      sound.playbackRate = u.random(0.9, 1.1)
-      sound.currentTime = 0
-      sound.volume = 0.75
-      sound.play()
-      this.after(10, () => {}, 'timeWarning')
-    }
-
-    this.dead = this.dead || this.time < -10
   }
 
   moveAndCollide () {
@@ -550,26 +517,26 @@ export default class Player extends Thing {
     if (!this.showGui) return
 
     // time
-    ctx.save()
-    ctx.font = 'italic bold 64px Times New Roman'
-    ctx.textAlign = 'center'
-    ctx.translate(width / 2, height - 48)
-    let scale = this.timer('timeBonus') ? u.map(this.timer('timeBonus') ** 2, 0, 1, 2.5, 1, true) : 1
-    scale = Math.max(scale, this.timer('timeWarning') ? u.map(this.timer('timeWarning') ** 2, 0, 1, 1.5, 1, true) : 1)
-    ctx.scale(scale, scale)
-    const seconds = Math.max(this.time / 60, 0)
-    const time = seconds.toFixed(0)
-    ctx.fillStyle = 'black'
-    if (this.timer('timeWarning')) {
-      ctx.fillStyle = 'black'
-    }
-    ctx.fillText(time, -4, 4)
-    ctx.fillStyle = 'white'
-    if (this.timer('timeWarning')) {
-      ctx.fillStyle = 'red'
-    }
-    ctx.fillText(time, 0, 0)
-    ctx.restore()
+    // ctx.save()
+    // ctx.font = 'italic bold 64px Times New Roman'
+    // ctx.textAlign = 'center'
+    // ctx.translate(width / 2, height - 48)
+    // let scale = this.timer('timeBonus') ? u.map(this.timer('timeBonus') ** 2, 0, 1, 2.5, 1, true) : 1
+    // scale = Math.max(scale, this.timer('timeWarning') ? u.map(this.timer('timeWarning') ** 2, 0, 1, 1.5, 1, true) : 1)
+    // ctx.scale(scale, scale)
+    // const seconds = Math.max(this.time / 60, 0)
+    // const time = seconds.toFixed(0)
+    // ctx.fillStyle = 'black'
+    // if (this.timer('timeWarning')) {
+    //   ctx.fillStyle = 'black'
+    // }
+    // ctx.fillText(time, -4, 4)
+    // ctx.fillStyle = 'white'
+    // if (this.timer('timeWarning')) {
+    //   ctx.fillStyle = 'red'
+    // }
+    // ctx.fillText(time, 0, 0)
+    // ctx.restore()
 
     // crosshair
     ctx.drawImage(assets.images.crosshair, width / 2 - 16, height / 2 - 16)
@@ -663,6 +630,44 @@ export default class Player extends Thing {
       if (!person.qualities.includes(entry.quality)) {
         failures.push(entry)
       }
+    }
+
+    // Determine if arrested
+    let bystanders = game.findByClass("Person")
+    let caught = false
+    for (let bystander of bystanders) {
+      let distance = vec3.distance(person.position, bystander.position)
+
+      // Make sure this bystander isn't the target
+      if (bystander.tranquilized) {
+        continue
+      }
+
+      // Ray-trace
+      let collision = false
+      for (let l = 0; l < 1; l += (1/distance) * 10) {
+        let tracePos = vec3.lerp(person.position, bystander.position, l)
+        let groundHeight = game.getThing('terrain').getGroundHeight(tracePos[0], tracePos[1])
+        if (groundHeight > tracePos[2]) {
+          collision = true
+          break
+        }
+      }
+      if (!collision) {
+        caught = true
+        bystander.caughtYou = true
+      }
+    }
+    // If at least one bystander saw you, you get arrested
+    if (caught) {
+      failures = [
+        {
+          quality: "",
+          organ: "all",
+          issue: "You were caught!",
+          solution: "Make sure to take your victim to a secluded location."
+        },
+      ]
     }
 
     // Create Organ graphics

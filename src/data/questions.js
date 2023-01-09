@@ -250,6 +250,7 @@ export const data = {
             { value: "I think the Burg-R-Save is open right now.", weight: 100 },
             { value: "There's a Taco truck down that way.", weight: 100 },
             { value: "There's a good Mexi-Cali-French restaurant just down the street.", weight: 100 },
+            { value: "Try Bagel Beagle just around the corner. They don't skimp on the cream cheese.", weight: 20 },
         ],
         responses_foodie: [
             { value: "Ugh, there aren't any good places to eat within a ten mile radius.", weight: 100 },
@@ -257,29 +258,6 @@ export const data = {
             { value: "If you want good food, stay away from this area, my friend.", weight: 10 },
         ],
     },
-    // where_is_eat: {
-    //     level_required: 5,
-    //     friendliness_required: 10,
-    //     friendliness_qualities: ["all"],
-    //     topic_relevance: {
-    //         food: {
-    //             required: 10,
-    //             added: 10,
-    //         },
-    //     },
-    //     follow_conditions: ["friendly"],
-    //     options: [
-    //         { value: "Do you think you could show me where that restaurant is?", weight: 100 },
-    //         { value: "Where is that restaurant you named?", weight: 100 },
-    //     ],
-    //     responses_default: [
-    //         { value: "Dude, it's just down that way.", weight: 100 },
-    //         { value: "It's just over there. Not hard to find.", weight: 100 },
-    //     ],
-    //     responses_foodie: [
-    //         { value: "What? I didn't name a restaurant.", weight: 100 },
-    //     ],
-    // },
     favorite_restaurant: {
         level_required: 5,
         friendliness_required: 30,
@@ -299,19 +277,48 @@ export const data = {
             { value: "Burg-R-Save is my favorite.", weight: 100 },
             { value: "Burg-R-Save makes the best burgers. You should try their one-and-a-quarter-pounder.", weight: 10 },
             { value: "Burg-R-Save makes the best burgers. And you save!", weight: 10 },
-            { value: "That Mexi-Cali-French restaurant down the street is really good.", weight: 120 },
-            { value: "That Mexi-Cali-French restaurant is really good. I love their Dijon Burrito Blasters", weight: 20 },
-            { value: "Jake's Pastries is my favorite.", weight: 100 },
-            { value: "Bagel Beagle is damn good. They don't skimp on the cream cheese!", weight: 10 },
+            { value: "That Mexi-Cali-French restaurant is really good. I love their Dijon Burrito Blasters.", weight: 90 },
+            { value: "Jake's Pastries is my favorite. They make an ice cream cake served in a bowl of hot fudge!", weight: 41 },
             { value: "Burg-R-Save is great. Can't go wrong with the ham fries.", weight: 10 },
             { value: "Burg-R-Save is great. Can't go wrong with the deep fried deep fry batter.", weight: 1 },
             { value: "Burg-R-Save is great. Can't go wrong with the deep fried lard.", weight: 10 },
         ],
         responses_foodie: [
-            { value: "Arnoff's is decent, but the breadsticks were rather dry.", weight: 100 },
-            { value: "Ordinarily, I would recommend Ourduinou's but they have cheaped out on their olives of late.", weight: 100 },
+            { value: "Arnoff's is decent, but the breadsticks were somewhat dry.", weight: 100 },
+            { value: "Ordinarily I would recommend Ourduinou's but they have cheaped out on their olives of late.", weight: 100 },
             { value: "The Salad Bowl makes a good salad. Too bad their tuna melt couldn't make the grade.", weight: 100 },
             { value: "I quite like the food at King's Kitchen, though the wait staff are rather curt. 3/5 stars.", weight: 100 },
+        ],
+    },
+    food_how_often: {
+        level_required: 5,
+        friendliness_required: 40,
+        friendliness_qualities: ["all"],
+        topic_relevance: {
+            food: {
+                required: 20,
+                added: 10,
+            },
+        },
+        follow_conditions: [],
+        options: [
+            { value: "How often do you eat there?", weight: 100 },
+            { value: "Do you eat there a lot?", weight: 100 },
+        ],
+        responses_default: [
+            { value: "Every couple of weeks, probably. I don't eat out too much.", weight: 100 },
+            { value: "Not too often. It's a treat.", weight: 100 },
+            { value: "Ocasionally. Don't want to be eating junk food every day.", weight: 100 },
+        ],
+        responses_fat: [
+            { value: "Every day!", weight: 100 },
+            { value: "I eat there all the time. Sometimes even twice in one day!", weight: 100 },
+            { value: "At least four times a week. It's too good!", weight: 100 },
+        ],
+        responses_foodie: [
+            { value: "I ate there twice last week for my food blog.", weight: 100 },
+            { value: "Occasionally. There are oh so many restaurants to try in this state!", weight: 100 },
+            { value: "A few times a year. I would love to eat there more, but it's rather pricy.", weight: 100 },
         ],
     },
 

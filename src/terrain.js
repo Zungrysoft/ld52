@@ -582,11 +582,11 @@ export default class Terrain extends Thing {
     */
 
     // draw ocean surface
-    /*
+
     gfx.setShader(assets.shaders.scrolling)
     getScene().camera3D.setUniforms()
     gfx.setTexture(assets.textures.water)
-    gfx.set("color", [1,1,1,0.5])
+    gfx.set("color", [1,1,1,1])
     gfx.set("scale", 0.001)
     gfx.set("offset", [this.time/1000, 0])
     gfx.set("cutoff", 0)
@@ -596,7 +596,7 @@ export default class Terrain extends Thing {
         getScene().camera3D.position[1],
         -16
       ],
-      scale: 10000,
+      scale: 100000,
     }))
     gfx.drawQuad(
       -1, -1, 0,
@@ -604,7 +604,6 @@ export default class Terrain extends Thing {
       -1, 1, 0,
       1, 1, 0,
     )
-    */
 
     // draw clouds
     /*
@@ -736,6 +735,7 @@ export default class Terrain extends Thing {
     // For the first few npcs, use the preset npcs from the level file
     let presetNpcs = levelData.data[lvl].preset_npcs
     if (index < presetNpcs.length) {
+      // console.log(presetNpcs[index])
       return presetNpcs[index]
     }
 
@@ -746,6 +746,7 @@ export default class Terrain extends Thing {
         qualities.push(qualityEntry.quality)
       }
     }
+    // console.log(qualities)
     return qualities
   }
 
