@@ -100,6 +100,7 @@ export const data = {
             { value: "You've gotta try Sleazy K's. I'm a regular, so I can get you in. Just ask.", weight: 100 },
             { value: "The Quickshot is down the block. I'm there every night!", weight: 100 },
             { value: "What kinda bar are you looking for? I know all the best places.", weight: 70 },
+            { value: "Oh man, you're in for a treat. We should go bar-hopping!", weight: 10 },
         ],
         responses_snob: [
             { value: "You'll only find dive bars around here. Good thing dive bars are in right now.", weight: 100 },
@@ -391,7 +392,8 @@ export const data = {
             { value: "What do you think of half-shaved dreadlocks?", weight: 100 },
             { value: "What do you think of polka-dot flannel?", weight: 100 },
             { value: "What do you think of bell bottom socks?", weight: 100 },
-            { value: "What do you think of wearing motorcycle helmets indoors?", weight: 3 },
+            { value: "What do you think of exercise sunglasses?", weight: 10 },
+            { value: "What do you think of wearing motorcycle helmets indoors?", weight: 2 },
         ],
         responses_default: [
             { value: "Dude, I really don't know anything about fashion.", weight: 100 },
