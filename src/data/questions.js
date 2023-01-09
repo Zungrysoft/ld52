@@ -102,7 +102,7 @@ export const data = {
             { value: "What kinda bar are you looking for? I know all the best places.", weight: 70 },
         ],
         responses_snob: [
-            { value: "Not in this neighborhood. The beer here tastes like swill.", weight: 100 },
+            { value: "You'll only find dive bars around here. Good thing dive bars are in right now.", weight: 100 },
         ],
     },
     lets_drink: {
@@ -119,7 +119,8 @@ export const data = {
         follow_conditions: ["drunkard", "snob"],
         options: [
             { value: "Wanna join me for a drink?", weight: 100 },
-            { value: "Wanna come drinking with me?", weight: 100 },
+            { value: "Wanna come drink with me?", weight: 50 },
+            { value: "Wanna go drinking with me?", weight: 50 },
             { value: "Wanna kill some brain cells with me?", weight: 30 },
         ],
         responses_default: [
@@ -290,31 +291,6 @@ export const data = {
             { value: "There's a Taco truck down that way.", weight: 100 },
             { value: "There's a good Mexi-Cali-French restaurant just down the street.", weight: 100 },
             { value: "Try Bagel Beagle just around the corner. They don't skimp on the cream cheese.", weight: 20 },
-        ],
-        responses_foodie: [
-            { value: "Ugh, there aren't any good places to eat within a ten mile radius.", weight: 100 },
-            { value: "Definitely not around here. The restaurants here are awful.", weight: 100 },
-            { value: "If you want good food, stay away from this area, my friend.", weight: 10 },
-        ],
-    },
-    favorite_restaurant: {
-        level_required: 5,
-        friendliness_required: 20,
-        friendliness_qualities: ["all", "fat"],
-        impatience_qualities: [],
-        topic_relevance: {
-            food: {
-                required: 10,
-                added: 10,
-            },
-        },
-        follow_conditions: [],
-        options: [
-            { value: "What is your favorite place to eat in this city?", weight: 100 },
-            { value: "Where do you prefer to eat?", weight: 100 },
-        ],
-        responses_default: [
-            { value: "Burg-R-Save is my favorite.", weight: 100 },
             { value: "Burg-R-Save makes the best burgers. You should try their one-and-a-quarter-pounder.", weight: 10 },
             { value: "Burg-R-Save makes the best burgers. And you save!", weight: 10 },
             { value: "That Mexi-Cali-French restaurant is really good. I love their Dijon Burrito Blasters.", weight: 90 },
@@ -329,6 +305,11 @@ export const data = {
             { value: "The Salad Bowl makes a good salad. Too bad their tuna melt couldn't make the grade.", weight: 100 },
             { value: "I quite like the food at King's Kitchen, though the wait staff are rather curt. 3/5 stars.", weight: 100 },
         ],
+        // responses_foodie: [
+        //     { value: "Ugh, there aren't any good places to eat within a ten mile radius.", weight: 100 },
+        //     { value: "Definitely not around here. The restaurants here are awful.", weight: 100 },
+        //     { value: "If you want good food, stay away from this area, my friend.", weight: 10 },
+        // ],
     },
     food_how_often: {
         level_required: 5,
@@ -337,7 +318,7 @@ export const data = {
         impatience_qualities: [],
         topic_relevance: {
             food: {
-                required: 20,
+                required: 10,
                 added: 10,
             },
         },
@@ -518,7 +499,7 @@ export const data = {
             { value: "Basketball is great! Really gets the blood pumping.", weight: 100 },
             { value: "I'm a soccer man myself. Played all my life.", weight: 100 },
             { value: "I do love me some Ping-Pong.", weight: 5 },
-            { value: "I'm actually on the darksville curling team!", weight: 5 },
+            { value: "I'm actually on the Darksville curling team!", weight: 5 },
         ],
         responses_fat: [
             { value: "Not a fan of sports myself.", weight: 100 },
@@ -752,7 +733,7 @@ export const data = {
     },
     music_type: {
         level_required: 3,
-        friendliness_required: 30,
+        friendliness_required: 10,
         friendliness_qualities: ["all"],
         impatience_qualities: [],
         topic_relevance: {
@@ -797,7 +778,7 @@ export const data = {
     },
     do_you_play: {
         level_required: 3,
-        friendliness_required: 30,
+        friendliness_required: 10,
         friendliness_qualities: ["all"],
         impatience_qualities: [],
         topic_relevance: {

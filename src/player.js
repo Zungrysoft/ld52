@@ -59,6 +59,7 @@ export default class Player extends Thing {
   faceTarget = null
   speechQueue = ""
   speechQueueIndex = 0
+  hasConvincedPerson = false
 
   constructor (position, angle = 0) {
     super()
@@ -562,6 +563,7 @@ export default class Player extends Thing {
       pos += 1
     }
 
+    // Level
     ctx.save()
     ctx.translate(32, height - 48)
     ctx.font = 'italic 32px Times New Roman'
@@ -574,7 +576,20 @@ export default class Player extends Thing {
     }
     ctx.restore()
 
-    // html
+    // Tranq hint
+    if (globals.level <= 2 && this.hasConvincedPerson) {
+      ctx.save()
+      ctx.translate(32, height - 96)
+      ctx.font = 'italic 32px Times New Roman'
+      {
+        const str = 'Press \'Q\' to draw tranquilizer'
+        ctx.fillStyle = 'black'
+        ctx.fillText(str, 0, 0)
+        ctx.fillStyle = 'white'
+        ctx.fillText(str, 4, -4)
+      }
+      ctx.restore()
+    }
 
   }
 
@@ -846,6 +861,7 @@ export default class Player extends Thing {
     for (let cond of questions.data[question_id].follow_conditions) {
       if (cond === "any" || this.talkingTo.qualities.includes(cond)) {
         this.talkingTo.followingEnabled = true
+        this.after(60*4, () => {this.hasConvincedPerson = true})
       }
     }
 

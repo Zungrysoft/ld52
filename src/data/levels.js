@@ -47,7 +47,7 @@ export const data = [
         ],
         qualities_banned: [],
         prompt: "We got a real moneybags customer who's looking to compete in the Triathalon next month. To help him out, he needs a new pair of lungs. Good breathing is part of a good athlete, after all. We'll wait until after the sale to tell him about steroids.<br/><br/>For this order, it's not good enough for the lungs to just be healthy. The donor must have <b>exceptionally strong lungs.</b>",
-        npc_count: 7,
+        npc_count: 6,
         preset_npcs: [
             ["athletic", "drunkard"],
             ["athletic"],
@@ -177,12 +177,12 @@ export const data = [
                 solution: ""
             },
         ],
-        prompt: "We just had a high-profile order come in. Guy wants to be a world-class E-Sports player and he wants us to find a donor with really <b>nimble fingers</b> so he can get good instantly. Now, our job isn't to ask such trifling questions as, \"Does that make any sense?\" or, \"Are you a fucking idiot?\" Our job is to do our job. So go out there and get me a gamer finger!<br/><br/>Oh, we also need another one of those <b>extra strong lungs</b>. So make sure he's got one of those too.",
+        prompt: "We just had a high-profile order come in. Guy wants to be a world-class E-Sports player and he wants us to find a donor with really <b>nimble fingers</b> so he can get good instantly. Now, our job isn't to ask such trifling questions as, \"Does that make any sense?\" or, \"Are you a fucking idiot?\" Our job is to do our job. So go out there and get me finger fit for a gamer!<br/><br/>Oh, we also need another one of those <b>extra strong lungs</b>. So make sure he's got one of those too.",
         npc_count: 7,
         preset_npcs: [
             ["pianist", "trombone_player", "drunkard", "nimble", "big_lungs", "multi_instrumentalist"],
             ["pianist", "drunkard", "nimble"],
-            ["trombone_player", "fat", "big_lungs"],
+            ["trombone_player", "drunkard", "fat", "big_lungs"],
             ["smoker", "gamer", "nimble"],
             ["athletic", "drunkard", "big_lungs"],
         ],
@@ -225,7 +225,7 @@ export const data = [
         ],
     },
     {
-        organs: ["heart", "eyeball", "brain"],
+        organs: ["liver", "eyeball", "brain"],
         qualities_required: [
             {
                 quality: "smart",
@@ -236,9 +236,9 @@ export const data = [
         ],
         qualities_banned: [
             {
-                quality: "fat",
-                organ: "heart",
-                issue: "Clogged Artery",
+                quality: "drunkard",
+                organ: "liver",
+                issue: "Fatty Liver",
                 solution: ""
             },
             {
@@ -254,12 +254,12 @@ export const data = [
                 solution: ""
             },
         ],
-        prompt: "Gotta talk fast! Don Wendle had a horrible, awful, wicked, horrible, terrible, nasty, horrible accident! He needs healthy transplants for his heart, eyes, and brain! If you get them for him, you will be handsomely rewarded. Now go, quick!!",
+        prompt: "Gotta talk fast! Don Wendle had a horrible, awful, wicked, horrible, terrible, nasty, horrible accident! He needs healthy transplants for his liver, eyes, and brain! If you get them for him, you will be handsomely rewarded. Now go, quick!!",
         npc_count: 13,
         preset_npcs: [
             ["athletic", "gamer", "accordionist", "smart"],
             ["drunkard", "blind", "smart"],
-            ["smart", "fat", "fashionista"],
+            ["smart", "drunkard", "fat", "fashionista"],
             ["smart", "glasses", "foodie", "snob"],
             ["drunkard", "smoker", "gamer"],
         ],

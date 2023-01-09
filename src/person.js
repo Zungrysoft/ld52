@@ -22,6 +22,7 @@ export default class Person extends Thing {
   caughtYou = false
   facingAngle = 0
   talkedTo = false
+  startPosition = [0, 0, 0]
 
   // Conversation stuff
   conversationSeed = 0
@@ -43,6 +44,8 @@ export default class Person extends Thing {
     this.qualities = qualities
     this.randomOffset = Math.floor(Math.random() * 60)
     this.facingAngle = Math.random() * 2 * Math.PI
+    this.startPosition = [...this.position]
+
   }
 
   update () {
@@ -51,16 +54,6 @@ export default class Person extends Thing {
     this.time += 1
 
     this.behavior()
-
-    if (!this.dead && this.health <= 0) {
-      this.dead = true
-
-      // Death sound
-      const sound = u.choose(assets.sounds.enemyHurt1, assets.sounds.enemyHurt2)
-      sound.playbackRate = u.random(0.9, 1.1)
-      sound.currentTime = 0
-      sound.play()
-    }
 
     for (const thing of this.getAllThingCollisions()) {
       if (
@@ -73,6 +66,10 @@ export default class Person extends Thing {
         thing.onHit(this)
         break
       }
+    }
+
+    if (this.position[2] < 0) {
+      this.position = vec3.add(this.startPosition, [0, 0, 128])
     }
   }
 
@@ -93,7 +90,7 @@ export default class Person extends Thing {
 
     // move towards player
     const player = game.getThing('player')
-    if (this.following && player) {
+    if (this.following && !this.tranquilized && !this.caughtYou && player) {
       let dist = u.distance2d(player.position[0], player.position[1], this.position[0], this.position[1]);
       if (dist > 200) {
         const accel = vec2.angleToVector(this.angle, 1.3)
@@ -107,6 +104,8 @@ export default class Person extends Thing {
 
     this.move()
     this.position[2] += this.speed[2]
+
+
   }
 
   draw () {
@@ -194,7 +193,7 @@ export default class Person extends Thing {
   }
 
   angleUpdate () {
-    this.after(60, () => this.angleUpdate())
+    this.after(30, () => this.angleUpdate())
     const player = game.getThing('player')
     if (!player) return
     this.angle = u.angleTowards(this.position[0], this.position[1], player.position[0], player.position[1])
