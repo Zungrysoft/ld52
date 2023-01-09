@@ -1,5 +1,6 @@
 import * as vec2 from './core/vector2.js'
 import * as levelSelector from './levelselection.js'
+import * as game from './core/game.js'
 
 // Pass in a position in either string format or list format and it will convert it to list format
 export function stringToPosition (p) {
@@ -197,6 +198,10 @@ function heightToType(height) {
 }
 
 export function generateEverything (level) {
+  let isMenu = true
+  if (game.getThing('player')) {
+    isMenu = false
+  }
   const lvl = levelSelector.selectLevel(level)
   const chunkSize = 64
 

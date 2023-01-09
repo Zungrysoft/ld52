@@ -17,6 +17,7 @@ import * as game from './core/game.js'
 import InputHandler from './core/inputs.js'
 import Bullet from './bullet.js'
 import Pointer from './pointer.js'
+import EndMenu from './endmenu.js'
 import DeathAnim from './deathanim.js'
 import LevelStart from './levelstart.js'
 import * as questions from './data/questions.js'
@@ -55,6 +56,9 @@ export default class Player extends Thing {
   slowTime = 0
   inMenu = true
   talkingTo = null
+  faceTarget = null
+  speechQueue = ""
+  speechQueueIndex = 0
 
   constructor (position, angle = 0) {
     super()
@@ -156,6 +160,26 @@ export default class Player extends Thing {
       dy = 0
     }
 
+    // Speech sounds
+    if (this.speechQueueIndex < this.speechQueue.length) {
+      this.speechQueueIndex ++
+
+      let whitespace = "&nbsp;"
+      let str = whitespace +
+        this.speechQueue.substring(0, this.speechQueueIndex) +
+        whitespace.repeat(this.speechQueue.length - this.speechQueueIndex) +
+        whitespace;
+      document.getElementById("response").innerHTML = str
+
+      if (this.speechQueueIndex % 3 === 1) {
+        const sound = assets.sounds.playerLand
+        sound.volume = 0.1
+        sound.playbackRate = u.random(0.5, 2)
+        sound.currentTime = 0
+        sound.play()
+      }
+    }
+
     // counter for view bobbing
     if (Math.abs(dx) + Math.abs(dy) > 0) {
       this.walkFrameAccel = 0.08
@@ -216,11 +240,11 @@ export default class Player extends Thing {
       // land
       if (!this.wasOnGround && this.lastFallSpeed < -5) {
         this.stretch = [1.6, 0.5]
-        const sound = assets.sounds.playerLand
-        sound.volume = 0.1
-        sound.playbackRate = u.random(1, 1.2)
-        sound.currentTime = 0
-        sound.play()
+        // const sound = assets.sounds.playerLand
+        // sound.volume = 0.1
+        // sound.playbackRate = u.random(1, 1.2)
+        // sound.currentTime = 0
+        // sound.play()
       }
     } else {
       this.lastFallSpeed = this.speed[2]
@@ -231,15 +255,15 @@ export default class Player extends Thing {
     if (!this.inputs.get('jump') && this.speed[2] >= 0) {
       this.speed[2] /= 1.25
     }
-    if (this.position[2] < 0) {
-      // assets.sounds.playerSplash.play()
-      // resetScene()
-      this.dead = true
-    }
+    // if (this.position[2] < 0) {
+    //   // assets.sounds.playerSplash.play()
+    //   // resetScene()
+    //   this.dead = true
+    // }
     this.staircaseOffset = Math.max(this.staircaseOffset - 6, 0)
     this.disableAirControl = Math.max(this.disableAirControl - 1, 0)
 
-    if (this.inputs.get('changeWeapon')) {
+    if (this.inputs.get('changeWeapon') && !this.inMenu) {
       if (!this.changeWeaponEdge) {
         this.changeWeaponEdge = true
 
@@ -331,20 +355,6 @@ export default class Player extends Thing {
     this.moveAndCollide()
     this.updateTimers()
     this.cameraUpdate()
-
-    // get hit by enemy bullets
-    for (const thing of this.getAllThingCollisions()) {
-      if (
-        thing.canDamagePlayers &&
-        Math.abs(thing.position[2] - this.position[2]) <= this.height / 2 + 8 &&
-        !thing.dead &&
-        thing.owner !== this
-      ) {
-        thing.onHit(this)
-
-        break
-      }
-    }
   }
 
   moveAndCollide () {
@@ -539,7 +549,9 @@ export default class Player extends Thing {
     // ctx.restore()
 
     // crosshair
-    ctx.drawImage(assets.images.crosshair, width / 2 - 16, height / 2 - 16)
+    if (!this.inMenu) {
+      ctx.drawImage(assets.images.crosshair, width / 2 - 16, height / 2 - 16)
+    }
 
     // Organs
     let organScale = 128
@@ -590,9 +602,16 @@ export default class Player extends Thing {
 
     // Set menu data
     let lvl = globals.level - 1
-    document.getElementById("titleText").innerText = "Level " + (lvl + 1)
-    document.getElementById("promptText").innerText = levelData.data[lvl].prompt
+    document.getElementById("promptText").innerHTML = levelData.data[lvl].prompt
     document.getElementById("closeButton").onclick = this.closeTitleMenu
+    if (levelData.data[lvl].finale) {
+      document.getElementById("titleText").innerText = "Congratulations!"
+      document.getElementById("closeButton").setAttribute("hidden", true)
+    }
+    else {
+      document.getElementById("titleText").innerText = "Level " + (lvl + 1)
+
+    }
 
     // Create Organ graphics
     let imageDiv = document.getElementById("organImages")
@@ -609,8 +628,10 @@ export default class Player extends Thing {
   }
 
   targetAcquired(person) {
+    // Set this person as the chosen target
+    this.faceTarget = person.position
+
     // Show menu
-    document.getElementById("finishMenu").removeAttribute("hidden")
     game.mouse.unlock()
     this.inMenu = true
 
@@ -646,7 +667,7 @@ export default class Player extends Thing {
       // Ray-trace
       let collision = false
       for (let l = 0; l < 1; l += (1/distance) * 10) {
-        let tracePos = vec3.lerp(person.position, bystander.position, l)
+        let tracePos = vec3.add(vec3.lerp(person.position, bystander.position, l), [0, 0, 32])
         let groundHeight = game.getThing('terrain').getGroundHeight(tracePos[0], tracePos[1])
         if (groundHeight > tracePos[2]) {
           collision = true
@@ -656,6 +677,7 @@ export default class Player extends Thing {
       if (!collision) {
         caught = true
         bystander.caughtYou = true
+        this.faceTarget = bystander.position
       }
     }
     // If at least one bystander saw you, you get arrested
@@ -664,7 +686,7 @@ export default class Player extends Thing {
         {
           quality: "",
           organ: "all",
-          issue: "You were caught!",
+          issue: "You were caught in the act!",
           solution: "Make sure to take your victim to a secluded location."
         },
       ]
@@ -694,15 +716,19 @@ export default class Player extends Thing {
     }
 
     if (failures.length == 0) {
-      this.endLevelSuccess()
+      game.getScene().addThing(new EndMenu(failures))
+      //this.endLevelSuccess()
     }
     else {
-      this.endLevelFailure(failures)
+      game.getScene().addThing(new EndMenu(failures))
+      //this.endLevelFailure()
     }
+
   }
 
   endLevelSuccess() {
     // Set menu data
+    document.getElementById("finishMenu").removeAttribute("hidden")
     let lvl = globals.level - 1
     document.getElementById("titleTextFinish").innerText = "Level " + (lvl + 1) + " Complete!"
     document.getElementById("issueText").innerText = ""
@@ -720,6 +746,7 @@ export default class Player extends Thing {
     issueText = issueText.substring(0, issueText.length-2)
 
     // Set menu data
+    document.getElementById("finishMenu").removeAttribute("hidden")
     let lvl = globals.level - 1
     document.getElementById("titleTextFinish").innerText = "Level " + (lvl + 1) + " Failed"
     document.getElementById("issueText").innerText = issueText
@@ -757,7 +784,25 @@ export default class Player extends Thing {
     // Get the question id
     let question_id = e.srcElement.id
 
-    // Set the person's response
+    // Determine impatience
+    if (questions.data[question_id].impatience_qualities.length > 0) {
+      let impatient = true
+      for (let quality of this.talkingTo.qualities) {
+        if (questions.data[question_id].impatience_qualities.includes(quality)) {
+          impatient = false
+          break
+        }
+      }
+      if (impatient) {
+        this.talkingTo.patience --
+        if (this.talkingTo.patience <= 0) {
+          this.talkingTo.friendliness = -1000
+          this.talkingTo.following = false
+          this.talkingTo.followingEnabled = false
+        }
+      }
+    }
+
     let mode = "default"
     for (let quality of this.talkingTo.qualities) {
       if (("responses_" + quality) in questions.data[question_id]) {
@@ -765,6 +810,17 @@ export default class Player extends Thing {
       }
     }
     this.talkingTo.recentResponse = this.weightedSelection(questions.data[question_id]["responses_" + mode], this.talkingTo.conversationSeed)
+    if (this.talkingTo.patience <= 0) {
+      this.talkingTo.recentResponse = this.weightedSelection(
+        [
+          { value: "It's obvious you're not listening to me, so go away.", weight: 100 },
+          { value: "This conversation feels rather one-sided. Please stop talking to me.", weight: 100 },
+          { value: "Are you even listening to a word that comes out of my mouth? Please go away.", weight: 80 },
+          { value: "I've told you I'm not interested. Fuck off.", weight: 80 },
+          { value: "It seems like you just enjoy hearing yourself talk. Go away.", weight: 20 },
+        ]
+        , this.talkingTo.conversationSeed)
+    }
 
     // Add question to already asked list
     this.talkingTo.alreadyAsked.push(question_id)
@@ -789,7 +845,6 @@ export default class Player extends Thing {
     // Some questions will cause the NPC to follow you under certain conditions
     for (let cond of questions.data[question_id].follow_conditions) {
       if (cond === "any" || this.talkingTo.qualities.includes(cond)) {
-        this.talkingTo.following = true
         this.talkingTo.followingEnabled = true
       }
     }
@@ -799,8 +854,10 @@ export default class Player extends Thing {
   }
 
   setConversationData() {
-    // Set response to previous question
-    document.getElementById("response").innerText = this.talkingTo.recentResponse
+    // Speech queue
+    document.getElementById("response").innerHTML = "_"
+    this.speechQueue = this.talkingTo.recentResponse
+    this.speechQueueIndex = 0
 
     // Clear existing question buttons
     let talkContainer = document.getElementById("talkContainer")
@@ -842,26 +899,25 @@ export default class Player extends Thing {
       const newButton = document.createElement("button");
       newButton.innerText = this.weightedSelection(q.options, this.talkingTo.conversationSeed)
       newButton.id = question
+      newButton.className = "talkButton"
       newButton.onclick = this.askQuestion
       talkContainer.appendChild(newButton)
     }
 
-    // Set follow button
+    // Set the exit buttons
     let followButton = document.getElementById("followButton")
     if (this.talkingTo.followingEnabled) {
       followButton.removeAttribute("hidden")
-      if (this.talkingTo.following) {
-        followButton.onclick = () => {this.talkingTo.following = false; this.talkingTo.recentResponse = "Umm, okay"; this.setConversationData()}
-        followButton.innerText = "Stop following me."
-      }
-      else {
-        followButton.onclick = () => {this.talkingTo.following = true; this.talkingTo.recentResponse = "Alright"; this.setConversationData()}
-        followButton.innerText = "Follow me."
-      }
+      followButton.onclick = () => {this.talkingTo.following = true; this.closeMenu()}
+      followButton.innerText = "Follow me!"
+      document.getElementById("exitButton").innerText = "Wait here."
     }
     else {
-      followButton.setAttribute("hidden", false)
+      followButton.setAttribute("hidden", true)
+      document.getElementById("exitButton").innerText = "See ya."
     }
+    document.getElementById("exitButton").onclick = () => {this.talkingTo.following = false; this.closeMenu()}
+
   }
 
   closeMenu = () => {
@@ -872,11 +928,17 @@ export default class Player extends Thing {
 
     // Switch the mouse back to first-person mode
     game.mouse.lock()
+
+    // End speech sounds
+    this.speechQueue = ""
+    this.speechQueueIndex = 0
   }
 
   openMenu(person) {
     this.inMenu = true
     this.talkingTo = person
+    this.talkingTo.talkedTo = true
+    this.talkingTo.facingAngle = ((Math.PI / 2) - game.getScene().camera3D.yaw) % (Math.PI * 2)
 
     // Reset some data on the person
     // this.talkingTo.alreadyAsked = []
@@ -888,9 +950,6 @@ export default class Player extends Thing {
 
     // Set data
     this.setConversationData()
-
-    // Set exit button
-    document.getElementById("exitButton").onclick = this.closeMenu
 
     game.mouse.unlock()
   }

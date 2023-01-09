@@ -66,7 +66,6 @@ export default class Bullet extends Thing {
   }
 
   onHit (other) {
-    other.health -= 1
     other.tranquilized = true
     this.dead = true
     other.after(15, () => {}, 'hurt')

@@ -73,17 +73,13 @@ const assets = {
     organBad: "bad.png",
 
     // Skyboxes
-    skybox1: 'skybox1.png',
-    skybox2: 'skybox2.png',
-    skybox3: 'skybox3.png',
+    skybox1: 'skybox_night.png',
 
-    // Enemies
-    enemy: 'enemy1.png',
-    squid: 'enemy2.png',
-    turret: 'enemy3.png',
-
-    // Projectiles
-    turretbullet: 'turretbullet.png',
+    // NPC's
+    person: 'person.png',
+    speechBalloon: 'speech_balloon.png',
+    angryCloud: 'angry_cloud.png',
+    followIndicator: 'mark_symbol.png',
 
     // Misc
     circle: 'circle.png',

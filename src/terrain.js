@@ -540,12 +540,6 @@ export default class Terrain extends Thing {
     getScene().camera3D.setUniforms()
     gfx.set('color', [1, 1, 1, 1])
     let skybox = assets.textures.skybox1
-    if (globals.level > 5) {
-      skybox = assets.textures.skybox2
-    }
-    if (globals.level > 10) {
-      skybox = assets.textures.skybox3
-    }
     gfx.setTexture(skybox)
     gfx.set('modelMatrix', mat.getTransformation({
       translation: [

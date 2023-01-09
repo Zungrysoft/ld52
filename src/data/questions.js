@@ -4,6 +4,7 @@ export const data = {
         level_required: 1,
         friendliness_required: 0,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             introduction: {
                 required: 0,
@@ -34,6 +35,7 @@ export const data = {
         level_required: 1,
         friendliness_required: 1,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             weather: {
                 required: 0,
@@ -63,6 +65,7 @@ export const data = {
         level_required: 1,
         friendliness_required: 1,
         friendliness_qualities: ["drunkard"],
+        impatience_qualities: [],
         topic_relevance: {
             alcohol: {
                 required: 0,
@@ -82,7 +85,7 @@ export const data = {
             { value: "Know any places a fellow can get hammered?", weight: 5 },
             { value: "Know any places a fellow can get slammed?", weight: 5 },
             { value: "Know any places a fellow can get slammered?", weight: 1 },
-            { value: "Know any places a guy can get himself liquored right on up?", weight: 3 },
+            { value: "Know any places a guy can get himself liquored right on up?", weight: 5 },
             { value: "Know any places a guy can get some good Beer?", weight: 5 },
         ],
         responses_default: [
@@ -94,16 +97,9 @@ export const data = {
         ],
         responses_drunkard: [
             { value: "Fuck yeah I do! You gotta try Jerry's Drinkhole!", weight: 100 },
-            { value: "Fuck yeah I do! You gotta try Sleazy K's!", weight: 100 },
-            { value: "Fuck yeah I do! You gotta try The Quickshot!", weight: 100 },
-
-            { value: "You've gotta try Jerry's Drinkhole. I'm a regular, so I can get you in. Just ask.", weight: 100 },
             { value: "You've gotta try Sleazy K's. I'm a regular, so I can get you in. Just ask.", weight: 100 },
-            { value: "You've gotta try The Quickshot. I'm a regular, so I can get you in. Just ask.", weight: 100 },
-
-            { value: "Jerry's Drinkhole is down the block. I'm there every night!", weight: 100 },
-            { value: "Sleazy K's is down the block. I'm there every night!", weight: 100 },
             { value: "The Quickshot is down the block. I'm there every night!", weight: 100 },
+            { value: "What kinda bar are you looking for? I know all the best places.", weight: 70 },
         ],
         responses_snob: [
             { value: "Not in this neighborhood. The beer here tastes like swill.", weight: 100 },
@@ -113,6 +109,7 @@ export const data = {
         level_required: 1,
         friendliness_required: 20,
         friendliness_qualities: ["drunkard"],
+        impatience_qualities: ["drunkard"],
         topic_relevance: {
             alcohol: {
                 required: 10,
@@ -126,7 +123,10 @@ export const data = {
             { value: "Wanna kill some brain cells with me?", weight: 30 },
         ],
         responses_default: [
-            { value: "No, I don't drink!", weight: 100 },
+            { value: "I told you, I don't drink!", weight: 100 },
+            { value: "I just told you, I'm sober!", weight: 10 },
+            { value: "I already told you I don't drink!", weight: 100 },
+            { value: "I already said that I don't drink!", weight: 100 },
         ],
         responses_drunkard: [
             { value: "Let's do it!", weight: 100 },
@@ -142,6 +142,7 @@ export const data = {
         level_required: 4,
         friendliness_required: 20,
         friendliness_qualities: ["drunkard"],
+        impatience_qualities: ["drunkard"],
         topic_relevance: {
             alcohol: {
                 required: 20,
@@ -154,7 +155,10 @@ export const data = {
             { value: "What's your poison?", weight: 100 },
         ],
         responses_default: [
-            { value: "I don't drink, so I don't have a favorite.", weight: 100 },
+            { value: "I told you, I don't drink!", weight: 100 },
+            { value: "I just told you, I'm sober!", weight: 10 },
+            { value: "I already told you I don't drink!", weight: 100 },
+            { value: "I already said that I don't drink!", weight: 100 },
         ],
         responses_drunkard: [
             { value: "I'm a whiskey man.", weight: 100 },
@@ -172,6 +176,7 @@ export const data = {
         level_required: 4,
         friendliness_required: 20,
         friendliness_qualities: ["drunkard"],
+        impatience_qualities: ["drunkard"],
         topic_relevance: {
             alcohol: {
                 required: 50,
@@ -183,7 +188,10 @@ export const data = {
             { value: "Ever tried mixing drinks?", weight: 100 },
         ],
         responses_default: [
-            { value: "I don't drink, so no.", weight: 100 },
+            { value: "I told you, I don't drink!", weight: 100 },
+            { value: "I just told you, I'm sober!", weight: 10 },
+            { value: "I already told you I don't drink!", weight: 100 },
+            { value: "I already said that I don't drink!", weight: 100 },
         ],
         responses_drunkard: [
             { value: "I'm going to bartending school, actually.", weight: 100 },
@@ -202,6 +210,7 @@ export const data = {
         level_required: 4,
         friendliness_required: 30,
         friendliness_qualities: ["smoker"],
+        impatience_qualities: [],
         topic_relevance: {
             smoking: {
                 required: 0,
@@ -228,12 +237,41 @@ export const data = {
             { value: "Sorry, I quit a month ago. A little too late though.", weight: 5 },
         ],
     },
+    smoke_often: {
+        level_required: 7,
+        friendliness_required: 30,
+        friendliness_qualities: ["smoker"],
+        impatience_qualities: ["smoker"],
+        topic_relevance: {
+            smoking: {
+                required: 10,
+                added: 10,
+            },
+        },
+        follow_conditions: [],
+        options: [
+            { value: "How many cigarettes do you reckon you smoke each day?", weight: 100 },
+            { value: "Do you chainsmoke, or just every so often?", weight: 30 },
+            { value: "How many cigarettes would you say you smoke each day?", weight: 100 },
+        ],
+        responses_default: [
+            { value: "I told you, I don't smoke!", weight: 100 },
+            { value: "I just told you, I'm clean!", weight: 10 },
+            { value: "I already told you I don't smoke!", weight: 100 },
+            { value: "I already said that I don't smoke!", weight: 100 },
+        ],
+        responses_smoker: [
+            { value: "I'd say I smoke a pack a day.", weight: 100 },
+            { value: "I smoke more than I'd care to admit.", weight: 100 },
+        ],
+    },
 
     // Food
     where_to_eat: {
         level_required: 5,
         friendliness_required: 1,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             food: {
                 required: 0,
@@ -243,8 +281,9 @@ export const data = {
         follow_conditions: [],
         options: [
             { value: "Do you know where the good restaurants are?", weight: 100 },
-            { value: "Do you know a guy could get a bite to eat around here?", weight: 100 },
+            { value: "Do you know where a guy could get a bite to eat around here?", weight: 100 },
             { value: "Where's all the best food in this town?", weight: 100 },
+            { value: "Where might one find an appropriate place to shove food into my food hole?", weight: 1 },
         ],
         responses_default: [
             { value: "I think the Burg-R-Save is open right now.", weight: 100 },
@@ -260,8 +299,9 @@ export const data = {
     },
     favorite_restaurant: {
         level_required: 5,
-        friendliness_required: 30,
+        friendliness_required: 20,
         friendliness_qualities: ["all", "fat"],
+        impatience_qualities: [],
         topic_relevance: {
             food: {
                 required: 10,
@@ -294,6 +334,7 @@ export const data = {
         level_required: 5,
         friendliness_required: 40,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             food: {
                 required: 20,
@@ -322,11 +363,105 @@ export const data = {
         ],
     },
 
+    // Fashion
+    fashion_nearby: {
+        level_required: 8,
+        friendliness_required: 30,
+        friendliness_qualities: ["fashionista", "glasses"],
+        impatience_qualities: [],
+        topic_relevance: {
+            fashion: {
+                required: 0,
+                added: 10,
+            },
+        },
+        follow_conditions: [],
+        options: [
+            { value: "I'm new here. Do you know where I might find some threads?", weight: 100 },
+            { value: "You look like a fashionable individual. Where might I find some good clothing around here?", weight: 100 },
+        ],
+        responses_default: [
+            { value: "The mall's down the street there. I'm sure they have some good clothing stores there. I don't really know.", weight: 100 },
+            { value: "I dunno. I usually just go to the thrift store.", weight: 100 },
+            { value: "Sorry, I'm the wrong guy to ask when it comes to fashion.", weight: 40 },
+        ],
+        responses_fashionista: [
+            { value: "Oooh! You should go to Cotton for Men. Their flannel is to die for!", weight: 100 },
+            { value: "Have you been to Helsen's? They have the best designer brands!", weight: 100 },
+        ],
+        responses_glasses: [
+            { value: "Cotton for Men is definitely one of the better stores.", weight: 100 },
+            { value: "I'd recommend Helsen's. I got these pants there.", weight: 100 },
+        ],
+    },
+    fashion_question: {
+        level_required: 8,
+        friendliness_required: 30,
+        friendliness_qualities: ["fashionista", "glasses"],
+        impatience_qualities: ["fashionista", "glasses"],
+        topic_relevance: {
+            fashion: {
+                required: 10,
+                added: 10,
+            },
+        },
+        follow_conditions: [],
+        options: [
+            { value: "What do you think of half-shaved dreadlocks?", weight: 100 },
+            { value: "What do you think of polka-dot flannel?", weight: 100 },
+            { value: "What do you think of bell bottom socks?", weight: 100 },
+            { value: "What do you think of wearing motorcycle helmets indoors?", weight: 3 },
+        ],
+        responses_default: [
+            { value: "Dude, I really don't know anything about fashion.", weight: 100 },
+            { value: "As I said, I am the wrong person to ask about fashion.", weight: 100 },
+            { value: "I really don't give a shit about fashion.", weight: 40 },
+        ],
+        responses_glasses: [
+            { value: "I tried that look a few years ago. Didn't really complement my glasses.", weight: 100 },
+        ],
+        responses_fashionista: [
+            { value: "LOVE it!", weight: 100 },
+            { value: "I predict that it will be the IT thing in three years!", weight: 100 },
+            { value: "Calling it now, it will be THE look in 2023.", weight: 100 },
+        ],
+    },
+    come_shop_with_me: {
+        level_required: 8,
+        friendliness_required: 30,
+        friendliness_qualities: ["fashionista", "glasses"],
+        impatience_qualities: ["fashionista", "glasses"],
+        topic_relevance: {
+            fashion: {
+                required: 20,
+                added: 10,
+            },
+        },
+        follow_conditions: ["fashionista"],
+        options: [
+            { value: "I have a new outfit I'm thinking of trying. Can you come tell me if it works?", weight: 100 },
+            { value: "I need your opinion on a new outfit. Want to come take a look?", weight: 100 },
+            { value: "I think you're just the right guy to critique my new outfit. Want to take a look?", weight: 100 },
+        ],
+        responses_default: [
+            { value: "Dude, I really don't know anything about fashion.", weight: 100 },
+            { value: "As I said, I am the wrong person to ask about fashion.", weight: 100 },
+            { value: "I really don't give a shit about fashion.", weight: 40 },
+        ],
+        responses_glasses: [
+            { value: "Ah, no thanks. Maybe some other time.", weight: 100 },
+        ],
+        responses_fashionista: [
+            { value: "Let's see it!", weight: 100 },
+        ],
+    },
+
     // Sports
     sports_events: {
         level_required: 3,
         friendliness_required: 1,
         friendliness_qualities: ["athletic"],
+        impatience_qualities: [],
         topic_relevance: {
             sports: {
                 required: 0,
@@ -342,7 +477,7 @@ export const data = {
             { value: "Yeah, the bucks are playing next week.", weight: 100 },
             { value: "I think the bucks are playing a home game next week.", weight: 100 },
         ],
-        responses_unathletic: [
+        responses_boring: [
             { value: "I wouldn't know, sorry.", weight: 100 },
             { value: "I'm the wrong person to ask.", weight: 100 },
             { value: "Not sure, sorry.", weight: 10 },
@@ -356,6 +491,7 @@ export const data = {
         level_required: 3,
         friendliness_required: 20,
         friendliness_qualities: ["athletic"],
+        impatience_qualities: [],
         topic_relevance: {
             sports: {
                 required: 1,
@@ -365,7 +501,8 @@ export const data = {
         follow_conditions: [],
         options: [
             { value: "Do you play any sports?", weight: 100 },
-            { value: "What sports are you into?", weight: 100 },
+            { value: "Are you into any sports?", weight: 100 },
+            { value: "Do you play a lot of sports?", weight: 19 },
         ],
         responses_default: [
             { value: "I don't play any sports myself. I just watch.", weight: 100 },
@@ -401,11 +538,15 @@ export const data = {
             { value: "Sportsball is for boorish thugs. I am a refined individual.", weight: 100 },
             { value: "I am an intellectual, so no.", weight: 100 },
         ],
+        responses_blind: [
+            { value: "Heh, probably not a good idea for a blind man to be playing sports. Most sports, anyway.", weight: 60 },
+        ],
     },
     join_sports: {
         level_required: 4,
         friendliness_required: 30,
         friendliness_qualities: [],
+        impatience_qualities: [],
         topic_relevance: {
             sports: {
                 required: 20,
@@ -423,18 +564,11 @@ export const data = {
             { value: "Isn't it a bit late for that?", weight: 100 },
             { value: "Not at this hour.", weight: 100 },
         ],
-        responses_fat: [
-            { value: "Not a fan of sports myself.", weight: 100 },
-            { value: "Nope. I hate sports.", weight: 100 },
-            { value: "Sports are dumb.", weight: 10 },
-        ],
-        responses_gamer: [
-            { value: "Nah, I'm more into video games.", weight: 100 },
-            { value: "Not unless you count Esports.", weight: 5 },
-            { value: "I'm not into sports. That's time I could be spending on my Ludum Dare entry.", weight: 1 },
-        ],
         responses_snob: [
             { value: "Emphatically no.", weight: 100 },
+        ],
+        responses_blind: [
+            { value: "No.", weight: 60 },
         ],
     },
 
@@ -443,6 +577,7 @@ export const data = {
         level_required: 2,
         friendliness_required: 20,
         friendliness_qualities: ["gamer"],
+        impatience_qualities: [],
         topic_relevance: {
             gaming: {
                 required: 0,
@@ -474,11 +609,16 @@ export const data = {
             { value: "Video games? How drole.", weight: 100 },
             { value: "Video games? How pedestrian.", weight: 100 },
         ],
+        responses_blind: [
+            { value: "I'm blind, so playing video games would be difficult.", weight: 60 },
+            { value: "I don't. Being totally blind makes it impossible to play most video games.", weight: 20 },
+        ],
     },
     console_gaming: {
         level_required: 2,
         friendliness_required: 20,
         friendliness_qualities: ["gamer"],
+        impatience_qualities: ["gamer"],
         topic_relevance: {
             gaming: {
                 required: 10,
@@ -491,10 +631,12 @@ export const data = {
             { value: "What console do you have?", weight: 100 },
         ],
         responses_default: [
-            { value: "I don't play video games.", weight: 100 },
-            { value: "Video games are for nerds.", weight: 5 },
-            { value: "Video games are for dorks.", weight: 5 },
-            { value: "What? I'm no nerd.", weight: 2 },
+            { value: "I told you, I don't play video games.", weight: 100 },
+            { value: "I just told you, I'm not a nerd!", weight: 10 },
+            { value: "I told you, I'm no dweeb!", weight: 10 },
+            { value: "I just told you, I'm not a dork!", weight: 10 },
+            { value: "I already told you I don't play video games!", weight: 100 },
+            { value: "I already said that I don't play video games!", weight: 100 },
         ],
         responses_gamer: [
             { value: "I'm a PC gamer.", weight: 100 },
@@ -503,11 +645,15 @@ export const data = {
             { value: "I play XBOX.", weight: 100 },
             { value: "I have a Playstation.", weight: 100 },
         ],
+        responses_blind: [
+            { value: "I told you, I don't play video games.", weight: 100 },
+        ],
     },
     favorite_game: {
         level_required: 2,
         friendliness_required: 20,
         friendliness_qualities: ["gamer"],
+        impatience_qualities: ["gamer"],
         topic_relevance: {
             gaming: {
                 required: 10,
@@ -520,9 +666,12 @@ export const data = {
             { value: "What's your favorite game?", weight: 100 },
         ],
         responses_default: [
-            { value: "I don't play video games.", weight: 100 },
-            { value: "Video games are for nerds.", weight: 5 },
-            { value: "Video games are for dorks.", weight: 5 },
+            { value: "I told you, I don't play video games.", weight: 100 },
+            { value: "I just told you, I'm not a nerd!", weight: 10 },
+            { value: "I told you, I'm no dweeb!", weight: 10 },
+            { value: "I just told you, I'm not a dork!", weight: 10 },
+            { value: "I already told you I don't play video games!", weight: 100 },
+            { value: "I already said that I don't play video games!", weight: 100 },
         ],
         responses_gamer: [
             { value: "Portal is my favorite!", weight: 50 },
@@ -532,14 +681,18 @@ export const data = {
             { value: "Ever played Undertale? That game is bomb.", weight: 100 },
             { value: "I'm more of a Retro gamer. Quake still kicks ass 27 years later.", weight: 100 },
         ],
+        responses_blind: [
+            { value: "I told you, I don't play video games.", weight: 100 },
+        ],
     },
     play_some_games: {
         level_required: 2,
         friendliness_required: 50,
         friendliness_qualities: ["gamer"],
+        impatience_qualities: ["gamer"],
         topic_relevance: {
             gaming: {
-                required: 30,
+                required: 20,
                 added: 10,
             },
         },
@@ -552,8 +705,7 @@ export const data = {
         ],
         responses_default: [
             { value: "Fuck no. Games are for nerds", weight: 80 },
-            { value: "I don't play video games, so no.", weight: 100 },
-            { value: "I would rather eat a shotgun barrel than play your dorky nerd games, you dorky nerd.", weight: 3 },
+            { value: "I would rather eat a shotgun barrel than play your dorky nerd games, you dorky nerd.", weight: 5 },
         ],
         responses_gamer: [
             { value: "Yeah!", weight: 50 },
@@ -562,6 +714,9 @@ export const data = {
             { value: "Let's see it!", weight: 50 },
             { value: "Gamer time!", weight: 1 },
         ],
+        responses_blind: [
+            { value: "I told you, I don't play video games.", weight: 100 },
+        ],
     },
 
     // Music
@@ -569,6 +724,7 @@ export const data = {
         level_required: 3,
         friendliness_required: 1,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             music: {
                 required: 0,
@@ -598,6 +754,7 @@ export const data = {
         level_required: 3,
         friendliness_required: 30,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             music: {
                 required: 10,
@@ -634,11 +791,15 @@ export const data = {
             { value: "Probably the works of Arthur Pryor. Simply beautiful.", weight: 100 },
             { value: "J. J. Johnson's work is my favorite by far.", weight: 100 },
         ],
+        responses_accordionist: [
+            { value: "I do appreciate the works of Frankie Yankovic", weight: 100 },
+        ],
     },
     do_you_play: {
         level_required: 3,
         friendliness_required: 30,
         friendliness_qualities: ["all"],
+        impatience_qualities: [],
         topic_relevance: {
             music: {
                 required: 20,
@@ -675,11 +836,15 @@ export const data = {
             { value: "I play trombone. Been playing since I was twelve.", weight: 100 },
             { value: "I'm a trombone player.", weight: 100 },
         ],
+        responses_accordionist: [
+            { value: "I play accordion, as a matter of fact.", weight: 100 },
+        ],
     },
     music_theory: {
         level_required: 3,
         friendliness_required: 40,
-        friendliness_qualities: ["pianist", "trombone_player"],
+        friendliness_qualities: ["pianist", "trombone_player", "accordionist"],
+        impatience_qualities: ["pianist", "trombone_player", "accordionist"],
         topic_relevance: {
             music: {
                 required: 30,
@@ -700,6 +865,7 @@ export const data = {
             { value: "I have no idea what you're talking about.", weight: 80 },
             { value: "You're asking the wrong guy.", weight: 10 },
             { value: "What the hell are you talking about?", weight: 10 },
+            { value: "What the fuck are you talking about?", weight: 6 },
             { value: "What the hell are you on about?", weight: 2 },
         ],
         responses_pianist: [
@@ -707,41 +873,49 @@ export const data = {
             { value: "There is certainly a lot of room for debate on that, but in my opinion...", weight: 100 },
             { value: "I actually studied that for a while. It's actually quite simple if you...", weight: 100 },
         ],
-        responses_trombonist: [
+        responses_trombone_player: [
+            { value: "That's a very interesting question. For starters, you have to consider...", weight: 100 },
+            { value: "There is certainly a lot of room for debate on that, but in my opinion...", weight: 100 },
+            { value: "I actually studied that for a while. It's actually quite simple if you...", weight: 100 },
+        ],
+        responses_accordionist: [
             { value: "That's a very interesting question. For starters, you have to consider...", weight: 100 },
             { value: "There is certainly a lot of room for debate on that, but in my opinion...", weight: 100 },
             { value: "I actually studied that for a while. It's actually quite simple if you...", weight: 100 },
         ],
     },
 
-    // Medical Conditions
-    alcohol_drown_sorrow: {
-        level_required: 4,
-        friendliness_required: 50,
-        friendliness_qualities: ["all"],
+    // Mathematics
+    math_question: {
+        level_required: 9,
+        friendliness_required: 40,
+        friendliness_qualities: ["smart"],
+        impatience_qualities: [],
         topic_relevance: {
-            alcohol: {
-                required: 30,
-                added: 10,
-            },
-            medical: {
+            math: {
                 required: 0,
                 added: 10,
             },
         },
         follow_conditions: [],
         options: [
-            { value: "I just found out I have cancer. I need something to numb the pain.", weight: 100 },
-            { value: "I could use a drink for sure. I just found out I don't have long to live.", weight: 100 },
-            { value: "A drink would sure do me some good. I was just diagnosed with cancer.", weight: 100 },
+            { value: "What is the derivative of x², evaluated at x=2?", weight: 100 },
+            { value: "Solve for x in the following equation: 19 = 2x² - 4x + 3", weight: 100 },
+            { value: "How many sides are on the regular polygon made only from right angles?", weight: 100 },
         ],
         responses_default: [
-            { value: "Oh man, I'm really sorry to hear that.", weight: 100 },
-            { value: "That sucks, dude.", weight: 100 },
-            { value: "Oh wow, that sucks.", weight: 100 },
+            { value: "Seven", weight: 100 },
+            { value: "Twenty-Three", weight: 100 },
+            { value: "Nine", weight: 100 },
+            { value: "Eighteen", weight: 100 },
+            { value: "Six", weight: 100 },
+            { value: "Thirty-Seven", weight: 100 },
+            { value: "Seven-Thousand and Three", weight: 40 },
+            { value: "I'm not doing math!", weight: 20 },
+            { value: "I don't know. I flunked math.", weight: 20 },
         ],
-        responses_snob: [
-            { value: "Best wishes.", weight: 100 },
+        responses_smart: [
+            { value: "Four", weight: 100 },
         ],
-    },
+    }
 }
