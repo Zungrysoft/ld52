@@ -209,7 +209,7 @@ export const data = {
     // Smoking
     bum_smoke: {
         level_required: 4,
-        friendliness_required: 30,
+        friendliness_required: 20,
         friendliness_qualities: ["smoker"],
         impatience_qualities: [],
         topic_relevance: {
@@ -300,9 +300,9 @@ export const data = {
             { value: "Burg-R-Save is great. Can't go wrong with the deep fried lard.", weight: 10 },
         ],
         responses_foodie: [
-            { value: "Arnoff's is decent, but the breadsticks were somewhat dry.", weight: 100 },
-            { value: "Ordinarily I would recommend Ourduinou's but they have cheaped out on their olives of late.", weight: 100 },
-            { value: "The Salad Bowl makes a good salad. Too bad their tuna melt couldn't make the grade.", weight: 100 },
+            { value: "Arnoff's is decent, but the breadsticks were somewhat dry. 3/5 stars.", weight: 100 },
+            { value: "Ordinarily I would recommend Ourduinou's but they have cheaped out on their olives of late. 3/5 stars.", weight: 100 },
+            { value: "The Salad Bowl makes a good salad. Too bad their tuna melt couldn't make the grade. 3/5 stars.", weight: 100 },
             { value: "I quite like the food at King's Kitchen, though the wait staff are rather curt. 3/5 stars.", weight: 100 },
         ],
         // responses_foodie: [
@@ -313,7 +313,7 @@ export const data = {
     },
     food_how_often: {
         level_required: 5,
-        friendliness_required: 40,
+        friendliness_required: 10,
         friendliness_qualities: ["all"],
         impatience_qualities: [],
         topic_relevance: {
