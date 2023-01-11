@@ -24,7 +24,7 @@ export const data = [
                 solution: "Find someone who isn't an alcoholic!"
             },
         ],
-        prompt: "You expressed some concerns over this whole \"Organ Harvesting\" thing. Harvest is such a dirty word. I prefer to call it \"Crowdsourced Organsharing\". But let me assuage your fears. Did you know that every year, over 8000 people die from not getting the organs they need? I say it would be immoral NOT to indulge in some harvesting! And if we didn't harvest them, someone else would. What's the harm?<br/><br/>Anywhom, our customer wants you to find him a <b>new liver</b>. Now, livers and darksville residents don't tend to get along. They like their beverages alcoholic and their livers fat. You'll need to search for someone who <b>isn't a drinker</b> to get a quality liver.",
+        prompt: "You expressed some concerns over this whole \"Organ Harvesting\" thing. Harvest is such a dirty word. I prefer to call it \"Crowdsourced Organsharing\". But let me assuage your fears. Did you know that every year, over 8000 people die from not getting the organs they need? I say it would be immoral NOT to indulge in some harvesting! And if we didn't harvest them, someone else would. What's the harm?<br/><br/>Anywhom, our customer wants you to find him a <b>new liver</b>. Now, livers and Darksville residents don't tend to get along. They like their beverages alcoholic and their livers fat. You'll need to search for someone who <b>isn't a drinker</b> to get a quality liver.",
         npc_count: 5,
         preset_npcs: [
             ["gamer"],
@@ -112,7 +112,7 @@ export const data = [
         prompt: "We got a customer in who had his tongue cut out by the mob. Here's the kicker, he's a food critic! It's a real tragedy I tell ya. To make things right, we're gonna find him a new tongue with a real <b>refined palate.</b> You know what they say, \"Create a problem, sell the solution.\"",
         npc_count: 12,
         preset_npcs: [
-            ["foodie", "pianist", "snob"],
+            ["foodie", "snob", "pianist"],
             ["foodie", "snob"],
         ],
         quality_chances: [
@@ -142,7 +142,7 @@ export const data = [
         prompt: "This next job is in what is lovingly referred to as the \"blubber district\". We need a human heart and kidney from one of our fine, gluttonous friends.",
         npc_count: 4,
         preset_npcs: [
-            ["boring"],
+            ["athletic"],
             ["drunkard", "smoker"]
         ],
         quality_chances: [

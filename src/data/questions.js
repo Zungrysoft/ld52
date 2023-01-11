@@ -110,7 +110,7 @@ export const data = {
         level_required: 1,
         friendliness_required: 20,
         friendliness_qualities: ["drunkard"],
-        impatience_qualities: ["drunkard"],
+        impatience_qualities: ["drunkard", "snob"],
         topic_relevance: {
             alcohol: {
                 required: 10,
@@ -144,7 +144,7 @@ export const data = {
         level_required: 4,
         friendliness_required: 20,
         friendliness_qualities: ["drunkard"],
-        impatience_qualities: ["drunkard"],
+        impatience_qualities: ["drunkard", "snob"],
         topic_relevance: {
             alcohol: {
                 required: 20,
@@ -178,7 +178,7 @@ export const data = {
         level_required: 4,
         friendliness_required: 20,
         friendliness_qualities: ["drunkard"],
-        impatience_qualities: ["drunkard"],
+        impatience_qualities: ["drunkard", "snob"],
         topic_relevance: {
             alcohol: {
                 required: 50,
