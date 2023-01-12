@@ -227,7 +227,7 @@ export const data = {
         ],
         responses_default: [
             { value: "I don't smoke, so I don't have any.", weight: 100 },
-            { value: "I don't have any, sorry.", weight: 100 },
+            { value: "I don't have any, sorry. I don't smoke.", weight: 100 },
             { value: "Get lost, tar-breath.", weight: 20 },
             { value: "Fuck off, dirtylungs.", weight: 20 },
             { value: "Get your second-hand smoke away from me, loser.", weight: 20 },
