@@ -1,3 +1,5 @@
+import * as game from './game.js'
+
 export function crossProduct (a, b) {
   return [
     a[1] * b[2] - a[2] * b[1],
@@ -112,6 +114,23 @@ export function vectorToAngles (vector) {
     Math.atan2(vector[1], vector[0]),
     Math.asin(vector[2])
   ]
+}
+
+export function rayTrace (start, end) {
+  let dist = distance(start, end)
+
+  // Ray-trace 
+  let collision = false
+  for (let l = 0; l < 1; l += (1/dist) * 10) {
+    let tracePos = lerp(start, end, l)
+    let groundHeight = game.getThing('terrain').getGroundHeight(tracePos[0], tracePos[1])
+    if (groundHeight > tracePos[2]) {
+      collision = true
+      break
+    }
+  }
+
+  return collision
 }
 
 function triEdge (p1, p2, position, normal) {

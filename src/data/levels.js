@@ -177,7 +177,7 @@ export const data = [
                 solution: ""
             },
         ],
-        prompt: "We just had a high-profile order come in. Guy wants to be a world-class E-Sports player and he wants us to find a donor with really <b>nimble fingers</b> so he can get good instantly. Now, our job isn't to ask such trifling questions as, \"Does that make any sense?\" or, \"Are you a fucking idiot?\" Our job is to do our job. So go out there and get me finger fit for a gamer!<br/><br/>Oh, we also need another one of those <b>extra strong lungs</b>. So make sure he's got one of those too.",
+        prompt: "We just had a high-profile order come in. Guy wants to be a world-class E-Sports player and he wants us to find a donor with really <b>nimble fingers</b> so he can get good instantly. Now, our job isn't to ask such trifling questions as, \"Does that make any sense?\" or, \"Are you a fucking idiot?\" Our job is to do our job. So go out there and get me a finger fit for a gamer!<br/><br/>Oh, we also need another one of those <b>extra strong lungs</b>. So make sure he's got one of those too.",
         npc_count: 7,
         preset_npcs: [
             ["pianist", "trombone_player", "drunkard", "nimble", "big_lungs", "multi_instrumentalist"],

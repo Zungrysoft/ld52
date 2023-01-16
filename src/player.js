@@ -57,6 +57,7 @@ export default class Player extends Thing {
   inMenu = true
   talkingTo = null
   faceTarget = null
+  faceSource = null
   speechQueue = ""
   speechQueueIndex = 0
   hasConvincedPerson = false
@@ -481,11 +482,14 @@ export default class Player extends Thing {
     }
     scene.camera3D.yaw += this.inputs.get('xLook')
     scene.camera3D.pitch += this.inputs.get('yLook')
-    scene.camera3D.position = [
-      this.position[0],
-      this.position[1],
-      Math.max(this.position[2] - this.staircaseOffset, 32)
-    ]
+    if (this.faceSource === null) {
+      scene.camera3D.position = [
+        this.position[0],
+        this.position[1],
+        Math.max(this.position[2] - this.staircaseOffset, 32)
+      ]
+    }
+    
   }
 
   draw () {
@@ -645,6 +649,7 @@ export default class Player extends Thing {
   targetAcquired(person) {
     // Set this person as the chosen target
     this.faceTarget = person.position
+    this.faceSource = this.position
 
     // Show menu
     game.mouse.unlock()
@@ -672,27 +677,28 @@ export default class Player extends Thing {
     let bystanders = game.findByClass("Person")
     let caught = false
     for (let bystander of bystanders) {
-      let distance = vec3.distance(person.position, bystander.position)
-
       // Make sure this bystander isn't the target
       if (bystander.tranquilized) {
         continue
       }
 
-      // Ray-trace
-      let collision = false
-      for (let l = 0; l < 1; l += (1/distance) * 10) {
-        let tracePos = vec3.add(vec3.lerp(person.position, bystander.position, l), [0, 0, 32])
-        let groundHeight = game.getThing('terrain').getGroundHeight(tracePos[0], tracePos[1])
-        if (groundHeight > tracePos[2]) {
-          collision = true
-          break
-        }
-      }
+      let start = vec3.add(person.position, [0, 0, 32])
+      let end = vec3.add(bystander.position, [0, 0, 32])
+      let collision = vec3.rayTrace(start, end)
+
+      // They have line of sight to you. You were caught!
       if (!collision) {
         caught = true
         bystander.caughtYou = true
         this.faceTarget = bystander.position
+        this.faceSource = vec3.add(person.position, [0, 0, 32])
+
+        // Check if they have line of sight to you, to determine whether the camera needs to be adjusted
+        let start2 = vec3.add(this.position, [0, 0, 32])
+        let collision2 = vec3.rayTrace(start2, end)
+        if (!collision2) {
+          this.faceSource = this.position
+        }
       }
     }
     // If at least one bystander saw you, you get arrested

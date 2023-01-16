@@ -20,15 +20,20 @@ export default class TitleMenu extends Thing {
     super.update()
     this.time += 1
 
+    const faceTarget = game.getThing('player').faceTarget
+    const faceSource = game.getThing('player').faceSource
+
     const cam = game.getScene().camera3D
 
     // What angle do we need to look at to be facing the target spot?
-    let desiredLook = vec3.normalize(vec3.subtract(game.getThing('player').position, game.getThing('player').faceTarget))
+    let desiredLook = vec3.normalize(vec3.subtract(faceSource, faceTarget))
     let currentLook = cam.lookVector
 
     let between = vec3.normalize(vec3.lerp(currentLook, desiredLook, 0.1))
 
     ;[cam.yaw, cam.pitch] = vec3.vectorToAngles(between)
+
+    cam.position = vec3.lerp(cam.position, faceSource, 0.1)
 
     if (this.time >= this.total) {
       if (this.isFailure) {
