@@ -139,7 +139,7 @@ export const data = [
                 solution: ""
             },
         ],
-        prompt: "This next job is in what is lovingly referred to as the \"blubber district\". We need a human heart and kidney from one of our fine, gluttonous friends.",
+        prompt: "This next job is in what is lovingly referred to as the \"blubber district\". We need a heart and lung from one of our fine, gluttonous friends.",
         npc_count: 4,
         preset_npcs: [
             ["athletic"],
