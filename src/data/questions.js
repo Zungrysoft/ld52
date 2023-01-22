@@ -91,7 +91,7 @@ export const data = {
         responses_default: [
             { value: "Not really. I don't drink.", weight: 100 },
             { value: "Sorry, no. I'm not much of a drinker.", weight: 100 },
-            { value: "Nope, sorry. I wouldn't know.", weight: 100 },
+            { value: "I wouldn't know. I hardly touch the stuff.", weight: 100 },
             { value: "Absolutely not! Alcohol kills your brain cells!", weight: 10 },
             { value: "Surely not! I do not indulge in such sinful pleasures!", weight: 10 },
         ],

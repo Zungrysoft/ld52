@@ -278,7 +278,7 @@ export const data = [
         organs: ["kidney", "liver", "lungs", "tongue", "heart", "finger", "eyeball", "brain"],
         qualities_required: [],
         qualities_banned: [],
-        prompt: "Don Wendle is most pleased with his new organs. As thanks for your service, he is offering you an all-expenses paid vacation to New Zealand. You will be picked up tomorrow night in the dark alley on 76th and main.<br/><br/>Created by ZungryWare in 72 hours for Ludum Dare #42.<br/><br/>Thank you for playing!",
+        prompt: "Don Wendle is most pleased with his new organs. As thanks for your service, he is offering you an all-expenses paid vacation to New Zealand. You will be picked up tomorrow night in the dark alley on 76th and main.<br/><br/>Created by ZungryWare in 72 hours for Ludum Dare #52.<br/><br/>Thank you for playing!",
         npc_count: 0,
         preset_npcs: [],
         quality_chances: [],
