@@ -188,6 +188,8 @@ export const data = {
         follow_conditions: [],
         options: [
             { value: "Ever tried mixing drinks?", weight: 100 },
+            { value: "How are you at mixing drinks?", weight: 40 },
+            { value: "How are you at mixology?", weight: 20 },
         ],
         responses_default: [
             { value: "I told you, I don't drink!", weight: 100 },
