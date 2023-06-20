@@ -16,7 +16,7 @@ export const mouse = {
   button: false,
   click: false,
   lock () {
-    canvas2d.requestPointerLock()
+    canvas2d.requestPointerLock({unadjustedMovement: true})
   },
   unlock () {
     document.exitPointerLock()

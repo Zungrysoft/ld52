@@ -477,8 +477,8 @@ export default class Player extends Thing {
     }
 
     if (mouse.isLocked()) {
-      scene.camera3D.yaw += mouse.delta[0] / 500
-      scene.camera3D.pitch += mouse.delta[1] / 500
+      scene.camera3D.yaw += mouse.delta[0] / 330
+      scene.camera3D.pitch += mouse.delta[1] / 330
     }
     scene.camera3D.yaw += this.inputs.get('xLook')
     scene.camera3D.pitch += this.inputs.get('yLook')
