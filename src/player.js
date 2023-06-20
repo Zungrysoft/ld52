@@ -682,6 +682,11 @@ export default class Player extends Thing {
         continue
       }
 
+      // Make sure this bystander doesn't have the 'blind' quality
+      if (bystander.qualities.includes('blind')) {
+        continue
+      }
+
       let start = vec3.add(person.position, [0, 0, 32])
       let end = vec3.add(bystander.position, [0, 0, 32])
       let collision = vec3.rayTrace(start, end)

@@ -686,7 +686,7 @@ export default class Terrain extends Thing {
   generate () {
 
     if (!globals.level) {
-      globals.level = 1
+      globals.level = 8
     }
 
     // Generate the world
