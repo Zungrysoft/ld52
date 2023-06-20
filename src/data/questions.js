@@ -199,7 +199,7 @@ export const data = {
         ],
         responses_drunkard: [
             { value: "I'm going to bartending school, actually.", weight: 100 },
-            { value: "I tried once, it was a disaster.", weight: 100 },
+            { value: "I tried once. It was a disaster.", weight: 100 },
             { value: "Oh yeah, you should see my liquor cabinet.", weight: 100 },
             { value: "Nah, I just order from the bar.", weight: 100 },
             { value: "I'd be afraid of making someone go blind!", weight: 10 },
